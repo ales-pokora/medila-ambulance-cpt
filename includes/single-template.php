@@ -804,26 +804,26 @@ function medila_ambulance_detail_styles() {
 
     .madx-hero__actions{display:flex;flex-wrap:wrap;gap:12px;}
 
-    /* BUTTONS */
-    .madx-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 30px;border-radius:100px;font-size:14px;font-weight:700;letter-spacing:.5px;text-decoration:none;transition:all .3s cubic-bezier(.4,0,.2,1);cursor:pointer;border:2px solid transparent;line-height:1;}
-    .madx-btn--primary{background:#fff;color:var(--g);}
-    .madx-btn--primary:hover{background:var(--ink);color:#fff;transform:translateY(-2px);box-shadow:0 14px 36px rgba(26,26,46,0.32);}
-    .madx-btn--ghost{background:rgba(255,255,255,0.12);color:#fff;border:2px solid rgba(255,255,255,0.32);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
-    .madx-btn--ghost:hover{background:#fff;color:var(--g);border-color:#fff;transform:translateY(-2px);}
-    .madx-btn--outline{background:transparent;color:var(--g);border:2px solid var(--g);}
-    .madx-btn--outline:hover{background:var(--g);color:#fff;transform:translateY(-2px);box-shadow:0 14px 36px rgba(0,162,120,0.32);}
+    /* BUTTONS - !important on color rules so theme link colors do not bleed through */
+    .madx-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 30px;border-radius:100px;font-size:14px;font-weight:700;letter-spacing:.5px;text-decoration:none !important;transition:all .3s cubic-bezier(.4,0,.2,1);cursor:pointer;border:2px solid transparent;line-height:1;}
+    .madx-btn--primary{background:#fff;color:var(--g) !important;}
+    .madx-btn--primary:hover{background:var(--ink);color:#fff !important;transform:translateY(-2px);box-shadow:0 14px 36px rgba(26,26,46,0.32);}
+    .madx-btn--ghost{background:rgba(255,255,255,0.12);color:#fff !important;border:2px solid rgba(255,255,255,0.32);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
+    .madx-btn--ghost:hover{background:#fff;color:var(--g) !important;border-color:#fff;transform:translateY(-2px);}
+    .madx-btn--outline{background:transparent;color:var(--g) !important;border:2px solid var(--g);}
+    .madx-btn--outline:hover{background:var(--g);color:#fff !important;transform:translateY(-2px);box-shadow:0 14px 36px rgba(0,162,120,0.32);}
     .madx-btn--lg{padding:18px 38px;font-size:15px;}
-    .madx-btn--callout{margin-left:auto;flex-shrink:0;background:#fff;color:var(--b);}
-    .madx-btn--callout:hover{background:var(--ink);color:#fff;}
+    .madx-btn--callout{margin-left:auto;flex-shrink:0;background:#fff;color:var(--b) !important;}
+    .madx-btn--callout:hover{background:var(--ink);color:#fff !important;}
 
     /* QUICK STRIP */
     .madx-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin:-40px 0 60px;position:relative;z-index:5;}
-    .madx-strip__item{display:flex;align-items:center;gap:16px;padding:22px 24px;background:#fff;border-radius:18px;box-shadow:0 12px 40px rgba(50,71,71,0.10);text-decoration:none;color:var(--ink);transition:all .3s ease;border:1px solid #f0f4f3;}
+    .madx-strip__item{display:flex;align-items:center;gap:16px;padding:22px 24px;background:#fff;border-radius:18px;box-shadow:0 12px 40px rgba(50,71,71,0.10);text-decoration:none !important;color:var(--ink) !important;transition:all .3s ease;border:1px solid #f0f4f3;}
     .madx-strip__item:hover{transform:translateY(-4px);box-shadow:0 22px 50px rgba(50,71,71,0.16);border-color:transparent;}
     .madx-strip__icon{width:48px;height:48px;background:var(--g);color:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 18px rgba(0,162,120,0.32);}
     .madx-strip__text{min-width:0;flex:1;}
-    .madx-strip__label{display:block;font-size:10.5px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
-    .madx-strip__item strong{display:block;font-size:15px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .madx-strip__label{display:block;font-size:10.5px;font-weight:700;color:var(--mute) !important;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+    .madx-strip__item strong{display:block;font-size:15px;font-weight:700;color:var(--ink) !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
     /* NEWS BANNER */
     .madx-news{display:flex;gap:22px;align-items:flex-start;padding:28px 32px;background:#f2f7f5;border-left:5px solid var(--g);border-radius:18px;margin-bottom:40px;box-shadow:0 4px 24px rgba(0,162,120,0.08);}
@@ -835,8 +835,8 @@ function medila_ambulance_detail_styles() {
     .madx-newsgrid{margin-bottom:50px;}
     .madx-newsgrid__head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
     .madx-newsgrid__title{font-family:"Raleway",sans-serif;font-size:26px;font-weight:800;color:var(--ink);margin:0;letter-spacing:-.3px;}
-    .madx-newsgrid__archive{color:var(--g);font-size:13px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.8px;transition:color .2s;}
-    .madx-newsgrid__archive:hover{color:var(--ink);}
+    .madx-newsgrid__archive{color:var(--g) !important;font-size:13px;font-weight:700;text-decoration:none !important;text-transform:uppercase;letter-spacing:.8px;transition:color .2s;}
+    .madx-newsgrid__archive:hover{color:var(--ink) !important;}
     .madx-newsgrid__items{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;}
     .madx-newsitem{display:flex;flex-direction:column;background:#fff;border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;box-shadow:0 4px 24px rgba(50,71,71,0.07);border:1px solid #f0f4f3;transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;}
     .madx-newsitem:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(50,71,71,0.13);border-color:transparent;}
