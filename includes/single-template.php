@@ -847,8 +847,8 @@ function medila_ambulance_detail_styles() {
     .madx-newsitem__cta{color:var(--g);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:auto;}
 
     /* News single back-link */
-    .madx-news-back{display:inline-flex;align-items:center;gap:6px;color:var(--g);text-decoration:none;font-size:14px;font-weight:600;padding:10px 18px;background:#f2f7f5;border-radius:100px;transition:all .25s;}
-    .madx-news-back:hover{background:var(--g);color:#fff;}
+    .madx-news-back{display:inline-flex;align-items:center;gap:6px;color:var(--g) !important;text-decoration:none !important;font-size:14px;font-weight:600;padding:10px 18px;background:#f2f7f5;border-radius:100px;transition:all .25s;}
+    .madx-news-back:hover{background:var(--g);color:#fff !important;}
     .madx-news-back strong{font-weight:700;}
 
     /* GRID */

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Medila Care - Custom Post Types
  * Description: Custom Post Types for medical practices (ambulance) and career positions with custom fields and taxonomies.
- * Version: 1.7.1
+ * Version: 1.7.2
  * Author: Medila Care
  * Text Domain: medila-ambulance
  */
