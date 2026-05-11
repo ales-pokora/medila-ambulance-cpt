@@ -443,28 +443,30 @@ function medila_news_template_styles() {
         .madx-newsitem__media{height:180px;}
     }
     @media(max-width:600px){
-        .madx{padding:0 12px 40px;}
-        .madx-ns-hero{border-radius:20px;min-height:300px;margin-bottom:32px;}
-        .madx-ns-hero__inner{padding:30px 22px;}
+        .madx{padding:0 6px 40px;}
+        .madx-ns-hero{border-radius:16px;min-height:280px;margin-bottom:28px;}
+        .madx-ns-hero__inner{padding:26px 18px;}
         .madx-ns-hero__title{font-size:24px;}
         .madx-ns-hero__crumbs{font-size:12px;margin-bottom:14px;}
         .madx-ns-hero__meta{gap:14px;}
-        .madx-ns-content{font-size:15.5px;margin-bottom:36px;}
+        .madx-ns-content{font-size:15.5px;margin-bottom:32px;padding:0 4px;}
         .madx-ns-content h2{font-size:24px;}
         .madx-ns-content h3{font-size:19px;}
-        .madx-ns-content blockquote{padding:18px 22px;}
-        .madx-ns-back{flex-direction:column;padding:24px 0 36px;margin-bottom:36px;}
+        .madx-ns-content blockquote{padding:18px 20px;}
+        .madx-ns-back{flex-direction:column;padding:24px 0 32px;margin-bottom:32px;}
         .madx-ns-back .madx-btn{width:100%;justify-content:center;}
-        .madx-na-hero{border-radius:18px;padding:28px 22px 24px;}
+        .madx-na-hero{border-radius:16px;padding:24px 18px 22px;}
         .madx-na-hero__title{font-size:24px;}
         .madx-na-hero__sub{font-size:14px;}
-        .madx-na-filters{gap:8px;margin-bottom:24px;}
+        .madx-na-filters{gap:8px;margin-bottom:20px;}
         .madx-chip{padding:8px 14px;font-size:12px;}
+        .madx-newsitem{border-radius:14px;}
         .madx-newsitem__media{height:160px;}
-        .madx-newsitem__body{padding:20px 22px 22px;}
+        .madx-newsitem__body{padding:18px 18px 20px;}
         .madx-newsitem__title{font-size:17px;}
+        .madx-newsitem__excerpt{font-size:13.5px;}
         .madx-pagination__item .page-numbers{min-width:38px;height:38px;font-size:13px;}
-        .madx-na-empty{padding:48px 20px;}
+        .madx-na-empty{padding:40px 20px;border-radius:16px;}
         .madx-na-empty__icon{width:72px;height:72px;}
         .madx-na-empty h2{font-size:22px;}
     }
