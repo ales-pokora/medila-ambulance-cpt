@@ -12,26 +12,45 @@ if (!defined('ABSPATH')) exit;
 // fields, falling back to the legacy single-value keys for old posts that
 // haven't been edited and re-saved yet.
 // -----------------------------------------------------------------------------
+// Each line of _ambulance_doctors / _ambulance_nurses is parsed as
+// "Name | https://photo-url.jpg". Photo URL is optional. Returns array of
+// ['name' => string, 'photo' => string].
+function medila_parse_personnel_line($line) {
+    $parts = array_map('trim', explode('|', $line, 2));
+    $name  = $parts[0];
+    $photo = isset($parts[1]) ? $parts[1] : '';
+    if ($photo && !filter_var($photo, FILTER_VALIDATE_URL)) $photo = '';
+    return ['name' => $name, 'photo' => $photo];
+}
+
 function medila_get_ambulance_doctors($post_id) {
     $multi = get_post_meta($post_id, '_ambulance_doctors', true);
     if ($multi) {
-        return array_values(array_filter(array_map('trim', explode("\n", $multi))));
+        $result = [];
+        foreach (array_filter(array_map('trim', explode("\n", $multi))) as $line) {
+            $result[] = medila_parse_personnel_line($line);
+        }
+        return $result;
     }
     $legacy = [];
     $d1 = get_post_meta($post_id, '_ambulance_doctor', true);
     $d2 = get_post_meta($post_id, '_ambulance_doctor2', true);
-    if ($d1) $legacy[] = $d1;
-    if ($d2) $legacy[] = $d2;
+    if ($d1) $legacy[] = ['name' => $d1, 'photo' => ''];
+    if ($d2) $legacy[] = ['name' => $d2, 'photo' => ''];
     return $legacy;
 }
 
 function medila_get_ambulance_nurses($post_id) {
     $multi = get_post_meta($post_id, '_ambulance_nurses', true);
     if ($multi) {
-        return array_values(array_filter(array_map('trim', explode("\n", $multi))));
+        $result = [];
+        foreach (array_filter(array_map('trim', explode("\n", $multi))) as $line) {
+            $result[] = medila_parse_personnel_line($line);
+        }
+        return $result;
     }
     $legacy_nurse = get_post_meta($post_id, '_ambulance_nurse', true);
-    return $legacy_nurse ? [$legacy_nurse] : [];
+    return $legacy_nurse ? [['name' => $legacy_nurse, 'photo' => '']] : [];
 }
 
 // Generic field shortcode: [medila_amb field="doctor"]
@@ -55,8 +74,12 @@ function medila_amb_doctors_shortcode() {
     if (!$doctors) return '';
 
     $output = '<div class="mad-doctors">';
-    foreach ($doctors as $name) {
-        $output .= '<div class="mad-doctor-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>' . esc_html($name) . '</span></div>';
+    foreach ($doctors as $d) {
+        $avatar = $d['photo']
+            ? '<img class="mad-doctor-chip__photo" src="' . esc_url($d['photo']) . '" alt="' . esc_attr($d['name']) . '">'
+            : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+        $cls = $d['photo'] ? 'mad-doctor-chip mad-doctor-chip--has-photo' : 'mad-doctor-chip';
+        $output .= '<div class="' . $cls . '">' . $avatar . '<span>' . esc_html($d['name']) . '</span></div>';
     }
     return $output . '</div>';
 }
@@ -68,8 +91,12 @@ function medila_amb_nurses_shortcode() {
     if (!$nurses) return '';
 
     $output = '<div class="mad-doctors mad-doctors--nurses">';
-    foreach ($nurses as $name) {
-        $output .= '<div class="mad-doctor-chip mad-doctor-chip--nurse"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#009ab2" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>' . esc_html($name) . '</span></div>';
+    foreach ($nurses as $n) {
+        $avatar = $n['photo']
+            ? '<img class="mad-doctor-chip__photo" src="' . esc_url($n['photo']) . '" alt="' . esc_attr($n['name']) . '">'
+            : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#009ab2" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+        $cls = $n['photo'] ? 'mad-doctor-chip mad-doctor-chip--nurse mad-doctor-chip--has-photo' : 'mad-doctor-chip mad-doctor-chip--nurse';
+        $output .= '<div class="' . $cls . '">' . $avatar . '<span>' . esc_html($n['name']) . '</span></div>';
     }
     return $output . '</div>';
 }
@@ -115,8 +142,9 @@ function medila_amb_contact_shortcode() {
         $output .= '<div class="mad-info-row"><span class="mad-info-label">Adresa</span><span class="mad-info-value">' . esc_html($address) . ' <a href="' . esc_url($map_url) . '" class="mad-map-link" target="_blank" rel="noopener">zobrazit na mapě</a></span></div>';
     }
     if ($nurses) {
-        $label = count($nurses) > 1 ? 'Sestry' : 'Sestra';
-        $output .= '<div class="mad-info-row"><span class="mad-info-label">' . esc_html($label) . '</span><span class="mad-info-value">' . esc_html(implode(', ', $nurses)) . '</span></div>';
+        $label  = count($nurses) > 1 ? 'Sestry' : 'Sestra';
+        $names  = implode(', ', array_map(function($n){ return $n['name']; }, $nurses));
+        $output .= '<div class="mad-info-row"><span class="mad-info-label">' . esc_html($label) . '</span><span class="mad-info-value">' . esc_html($names) . '</span></div>';
     }
 
     $output .= '</div>';
@@ -300,12 +328,18 @@ function medila_amb_full_shortcode() {
                 <div class="madx-doctors">
                     <?php
                     $roster = [];
-                    foreach ($doctors as $name) $roster[] = ['role' => 'Lékař',  'name' => $name, 'cls' => ''];
-                    foreach ($nurses  as $name) $roster[] = ['role' => 'Sestra', 'name' => $name, 'cls' => 'madx-doctor--nurse'];
-                    foreach ($roster as $p) : ?>
+                    foreach ($doctors as $d) $roster[] = ['role' => 'Lékař',  'name' => $d['name'], 'photo' => $d['photo'], 'cls' => ''];
+                    foreach ($nurses  as $n) $roster[] = ['role' => 'Sestra', 'name' => $n['name'], 'photo' => $n['photo'], 'cls' => 'madx-doctor--nurse'];
+                    foreach ($roster as $p) :
+                        $icon_cls = $p['photo'] ? 'madx-doctor__icon madx-doctor__icon--photo' : 'madx-doctor__icon';
+                    ?>
                         <div class="madx-doctor <?php echo esc_attr($p['cls']); ?>">
-                            <div class="madx-doctor__icon">
-                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <div class="<?php echo esc_attr($icon_cls); ?>">
+                                <?php if ($p['photo']) : ?>
+                                    <img src="<?php echo esc_url($p['photo']); ?>" alt="<?php echo esc_attr($p['name']); ?>">
+                                <?php else : ?>
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <?php endif; ?>
                             </div>
                             <div>
                                 <span class="madx-doctor__role"><?php echo esc_html($p['role']); ?></span>
@@ -586,6 +620,10 @@ function medila_ambulance_detail_styles() {
     $css = '
     .mad-doctors{display:flex;flex-wrap:wrap;gap:12px;margin:5px 0 0;}
     .mad-doctor-chip{display:inline-flex;align-items:center;gap:8px;background:#fff;padding:8px 18px;border-radius:30px;font-size:15px;font-weight:600;color:#00a278;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+    .mad-doctor-chip--nurse{color:#009ab2;}
+    .mad-doctor-chip--has-photo{padding-left:6px;}
+    .mad-doctor-chip__photo{width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,162,120,0.18);}
+    .mad-doctor-chip--nurse .mad-doctor-chip__photo{box-shadow:0 0 0 1px rgba(0,154,178,0.18);}
 
     .mad-phone-hero{display:inline-flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:18px;}
     .mad-phone-hero__label{font-size:14px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.5px;}
@@ -679,7 +717,9 @@ function medila_ambulance_detail_styles() {
     .madx-doctors{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:34px;}
     .madx-doctor{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:12px 22px 12px 12px;border-radius:18px;border:1px solid rgba(255,255,255,0.22);transition:transform .25s,background .25s;}
     .madx-doctor:hover{transform:translateY(-2px);background:rgba(255,255,255,0.22);}
-    .madx-doctor__icon{width:44px;height:44px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .madx-doctor__icon{width:44px;height:44px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .madx-doctor__icon--photo{padding:0;}
+    .madx-doctor__icon--photo img{width:100%;height:100%;object-fit:cover;display:block;}
     .madx-doctor__role{display:block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.85);margin-bottom:2px;}
     .madx-doctor__name{display:block;font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.1px;}
 

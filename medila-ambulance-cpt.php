@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Medila Care - Custom Post Types
  * Description: Custom Post Types for medical practices (ambulance) and career positions with custom fields and taxonomies.
- * Version: 1.4.0
+ * Version: 1.5.0
  * Author: Medila Care
  * Text Domain: medila-ambulance
  */
@@ -140,6 +140,8 @@ function medila_add_ambulance_meta_boxes() {
 
 function medila_ambulance_meta_box_callback($post) {
     wp_nonce_field('medila_ambulance_meta', 'medila_ambulance_nonce');
+    // Enable WP Media Library JS for the photo picker buttons (since v1.5.0)
+    wp_enqueue_media();
 
     // Multi-doctor / multi-nurse (since v1.4.0). Legacy single-value fields are
     // migrated into the textarea on first edit so no data is lost.
@@ -181,15 +183,56 @@ function medila_ambulance_meta_box_callback($post) {
         <h3>Personál</h3>
         <div class="medila-meta-field">
             <label for="ambulance_doctors">Lékaři</label>
-            <textarea id="ambulance_doctors" name="ambulance_doctors" rows="4" placeholder="MUDr. Jan Novák&#10;MUDr. Jana Nováková&#10;MUDr. Petr Svoboda"><?php echo esc_textarea($doctors_multi); ?></textarea>
-            <p class="description">Jeden lékař na řádek. Můžete přidat libovolný počet.</p>
+            <textarea id="ambulance_doctors" name="ambulance_doctors" rows="5" placeholder="MUDr. Jan Novák | https://medila.care/wp-content/uploads/2026/jan.jpg&#10;MUDr. Jana Nováková | https://medila.care/wp-content/uploads/2026/jana.jpg&#10;MUDr. Petr Svoboda"><?php echo esc_textarea($doctors_multi); ?></textarea>
+            <p class="description">
+                Jeden lékař na řádek. Volitelně přidejte fotku: <code>Jméno | URL fotky</code>.
+                <button type="button" class="button medila-photo-picker" data-target="ambulance_doctors">📷 Vybrat fotku z knihovny</button>
+            </p>
         </div>
         <div class="medila-meta-field">
             <label for="ambulance_nurses">Sestry</label>
-            <textarea id="ambulance_nurses" name="ambulance_nurses" rows="4" placeholder="Jana Dvořáková&#10;Marie Procházková&#10;(nepovinné)"><?php echo esc_textarea($nurses_multi); ?></textarea>
-            <p class="description">Jedna sestra na řádek. Můžete přidat libovolný počet.</p>
+            <textarea id="ambulance_nurses" name="ambulance_nurses" rows="5" placeholder="Jana Dvořáková | https://medila.care/wp-content/uploads/2026/jana-d.jpg&#10;Marie Procházková&#10;(nepovinné)"><?php echo esc_textarea($nurses_multi); ?></textarea>
+            <p class="description">
+                Jedna sestra na řádek. Volitelně přidejte fotku: <code>Jméno | URL fotky</code>.
+                <button type="button" class="button medila-photo-picker" data-target="ambulance_nurses">📷 Vybrat fotku z knihovny</button>
+            </p>
         </div>
     </div>
+
+    <script>
+    (function($){
+        if (typeof wp === 'undefined' || !wp.media) return;
+        $(document).off('click.medilaPhoto').on('click.medilaPhoto', '.medila-photo-picker', function(e){
+            e.preventDefault();
+            var $btn = $(this);
+            var target = document.getElementById($btn.data('target'));
+            if (!target) return;
+            var frame = wp.media({
+                title: 'Vybrat fotku personálu',
+                button: { text: 'Vložit URL fotky' },
+                multiple: false,
+                library: { type: 'image' }
+            });
+            frame.on('select', function(){
+                var att = frame.state().get('selection').first().toJSON();
+                var url = att.url;
+                var start = target.selectionStart != null ? target.selectionStart : target.value.length;
+                var end   = target.selectionEnd   != null ? target.selectionEnd   : target.value.length;
+                var before = target.value.substring(0, start);
+                var after  = target.value.substring(end);
+                // Detect if current line already contains a "|" — if so, just paste the URL where the cursor is.
+                var lineStart = before.lastIndexOf('\n') + 1;
+                var currentLine = before.substring(lineStart);
+                var prefix = currentLine.indexOf('|') > -1 ? '' : ' | ';
+                target.value = before + prefix + url + after;
+                target.focus();
+                var newPos = before.length + prefix.length + url.length;
+                target.setSelectionRange(newPos, newPos);
+            });
+            frame.open();
+        });
+    })(jQuery);
+    </script>
 
     <div class="medila-meta-section">
         <h3>Kontakt</h3>
@@ -341,8 +384,8 @@ function medila_ambulance_list_shortcode($atts) {
         $query->the_post();
         $id         = get_the_ID();
         $doctors_arr = function_exists('medila_get_ambulance_doctors') ? medila_get_ambulance_doctors($id) : [];
-        $doctor1    = $doctors_arr[0] ?? '';
-        $doctor2    = $doctors_arr[1] ?? '';
+        $doctor1    = isset($doctors_arr[0]) ? $doctors_arr[0]['name'] : '';
+        $doctor2    = isset($doctors_arr[1]) ? $doctors_arr[1]['name'] : '';
         $address    = get_post_meta($id, '_ambulance_address', true);
         $phone      = get_post_meta($id, '_ambulance_phone', true);
         $email      = get_post_meta($id, '_ambulance_email', true);
