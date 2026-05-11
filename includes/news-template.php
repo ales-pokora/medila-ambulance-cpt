@@ -308,7 +308,8 @@ function medila_news_archive_shortcode($atts) {
 // =============================================================================
 add_action('wp_enqueue_scripts', 'medila_news_template_styles');
 function medila_news_template_styles() {
-    if (!is_singular('ambulance_news') && !is_post_type_archive('ambulance_news')) return;
+    if (!is_singular('ambulance_news') && !is_post_type_archive('ambulance_news')
+        && !is_singular('medila_news') && !is_post_type_archive('medila_news')) return;
 
     $css = '
     /* Hide default theme title/meta — our shortcode renders its own */
@@ -320,7 +321,16 @@ function medila_news_template_styles() {
     body.post-type-archive-ambulance_news .et_post_meta_wrapper,
     body.post-type-archive-ambulance_news h1.entry-title,
     body.post-type-archive-ambulance_news .entry-title,
-    body.post-type-archive-ambulance_news .post-meta{display:none !important;}
+    body.post-type-archive-ambulance_news .post-meta,
+    body.single-medila_news .et_post_meta_wrapper,
+    body.single-medila_news h1.entry-title,
+    body.single-medila_news .entry-title,
+    body.single-medila_news .post-meta,
+    body.single-medila_news .et_pb_title_meta_container,
+    body.post-type-archive-medila_news .et_post_meta_wrapper,
+    body.post-type-archive-medila_news h1.entry-title,
+    body.post-type-archive-medila_news .entry-title,
+    body.post-type-archive-medila_news .post-meta{display:none !important;}
 
     /* ===== SHARED .madx-* BASE (also defined in single-template.php; duplicated
        here so news pages have all styles without depending on the ambulance
