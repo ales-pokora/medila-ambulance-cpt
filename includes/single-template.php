@@ -6,6 +6,34 @@
 
 if (!defined('ABSPATH')) exit;
 
+// -----------------------------------------------------------------------------
+// Multi-doctor / multi-nurse helpers (since v1.4.0)
+// Read the new `_ambulance_doctors` / `_ambulance_nurses` newline-separated
+// fields, falling back to the legacy single-value keys for old posts that
+// haven't been edited and re-saved yet.
+// -----------------------------------------------------------------------------
+function medila_get_ambulance_doctors($post_id) {
+    $multi = get_post_meta($post_id, '_ambulance_doctors', true);
+    if ($multi) {
+        return array_values(array_filter(array_map('trim', explode("\n", $multi))));
+    }
+    $legacy = [];
+    $d1 = get_post_meta($post_id, '_ambulance_doctor', true);
+    $d2 = get_post_meta($post_id, '_ambulance_doctor2', true);
+    if ($d1) $legacy[] = $d1;
+    if ($d2) $legacy[] = $d2;
+    return $legacy;
+}
+
+function medila_get_ambulance_nurses($post_id) {
+    $multi = get_post_meta($post_id, '_ambulance_nurses', true);
+    if ($multi) {
+        return array_values(array_filter(array_map('trim', explode("\n", $multi))));
+    }
+    $legacy_nurse = get_post_meta($post_id, '_ambulance_nurse', true);
+    return $legacy_nurse ? [$legacy_nurse] : [];
+}
+
 // Generic field shortcode: [medila_amb field="doctor"]
 add_shortcode('medila_amb', 'medila_amb_shortcode');
 function medila_amb_shortcode($atts) {
@@ -23,22 +51,27 @@ function medila_amb_shortcode($atts) {
 // Doctors shortcode: [medila_amb_doctors]
 add_shortcode('medila_amb_doctors', 'medila_amb_doctors_shortcode');
 function medila_amb_doctors_shortcode() {
-    $id = get_the_ID();
-    $doctor1 = get_post_meta($id, '_ambulance_doctor', true);
-    $doctor2 = get_post_meta($id, '_ambulance_doctor2', true);
-
-    if (!$doctor1 && !$doctor2) return '';
+    $doctors = medila_get_ambulance_doctors(get_the_ID());
+    if (!$doctors) return '';
 
     $output = '<div class="mad-doctors">';
-    if ($doctor1) {
-        $output .= '<div class="mad-doctor-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>' . esc_html($doctor1) . '</span></div>';
+    foreach ($doctors as $name) {
+        $output .= '<div class="mad-doctor-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>' . esc_html($name) . '</span></div>';
     }
-    if ($doctor2) {
-        $output .= '<div class="mad-doctor-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>' . esc_html($doctor2) . '</span></div>';
-    }
-    $output .= '</div>';
+    return $output . '</div>';
+}
 
-    return $output;
+// Nurses shortcode: [medila_amb_nurses]
+add_shortcode('medila_amb_nurses', 'medila_amb_nurses_shortcode');
+function medila_amb_nurses_shortcode() {
+    $nurses = medila_get_ambulance_nurses(get_the_ID());
+    if (!$nurses) return '';
+
+    $output = '<div class="mad-doctors mad-doctors--nurses">';
+    foreach ($nurses as $name) {
+        $output .= '<div class="mad-doctor-chip mad-doctor-chip--nurse"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#009ab2" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>' . esc_html($name) . '</span></div>';
+    }
+    return $output . '</div>';
 }
 
 // Phone (hero style) shortcode: [medila_amb_phone_hero label="Telefon:"]
@@ -65,9 +98,9 @@ function medila_amb_contact_shortcode() {
     $phone   = get_post_meta($id, '_ambulance_phone', true);
     $email   = get_post_meta($id, '_ambulance_email', true);
     $address = get_post_meta($id, '_ambulance_address', true);
-    $nurse   = get_post_meta($id, '_ambulance_nurse', true);
+    $nurses  = medila_get_ambulance_nurses($id);
 
-    if (!$phone && !$email && !$address && !$nurse) return '';
+    if (!$phone && !$email && !$address && !$nurses) return '';
 
     $output = '<div class="mad-info-list">';
 
@@ -81,8 +114,9 @@ function medila_amb_contact_shortcode() {
         $map_url = 'https://maps.google.com/?q=' . urlencode($address);
         $output .= '<div class="mad-info-row"><span class="mad-info-label">Adresa</span><span class="mad-info-value">' . esc_html($address) . ' <a href="' . esc_url($map_url) . '" class="mad-map-link" target="_blank" rel="noopener">zobrazit na mapě</a></span></div>';
     }
-    if ($nurse) {
-        $output .= '<div class="mad-info-row"><span class="mad-info-label">Sestra</span><span class="mad-info-value">' . esc_html($nurse) . '</span></div>';
+    if ($nurses) {
+        $label = count($nurses) > 1 ? 'Sestry' : 'Sestra';
+        $output .= '<div class="mad-info-row"><span class="mad-info-label">' . esc_html($label) . '</span><span class="mad-info-value">' . esc_html(implode(', ', $nurses)) . '</span></div>';
     }
 
     $output .= '</div>';
@@ -227,9 +261,8 @@ function medila_amb_full_shortcode() {
     $id = get_the_ID();
     if (!$id || get_post_type($id) !== 'ambulance') return '';
 
-    $doctor1      = get_post_meta($id, '_ambulance_doctor', true);
-    $doctor2      = get_post_meta($id, '_ambulance_doctor2', true);
-    $nurse        = get_post_meta($id, '_ambulance_nurse', true);
+    $doctors      = medila_get_ambulance_doctors($id);
+    $nurses       = medila_get_ambulance_nurses($id);
     $phone        = get_post_meta($id, '_ambulance_phone', true);
     $email        = get_post_meta($id, '_ambulance_email', true);
     $address      = get_post_meta($id, '_ambulance_address', true);
@@ -263,13 +296,12 @@ function medila_amb_full_shortcode() {
                 <?php endif; ?>
                 <h1 class="madx-hero__title"><?php echo esc_html($title); ?></h1>
 
-                <?php if ($doctor1 || $doctor2 || $nurse) : ?>
+                <?php if ($doctors || $nurses) : ?>
                 <div class="madx-doctors">
                     <?php
                     $roster = [];
-                    if ($doctor1) $roster[] = ['role' => 'Lékař',  'name' => $doctor1, 'cls' => ''];
-                    if ($doctor2) $roster[] = ['role' => 'Lékař',  'name' => $doctor2, 'cls' => ''];
-                    if ($nurse)   $roster[] = ['role' => 'Sestra', 'name' => $nurse,   'cls' => 'madx-doctor--nurse'];
+                    foreach ($doctors as $name) $roster[] = ['role' => 'Lékař',  'name' => $name, 'cls' => ''];
+                    foreach ($nurses  as $name) $roster[] = ['role' => 'Sestra', 'name' => $name, 'cls' => 'madx-doctor--nurse'];
                     foreach ($roster as $p) : ?>
                         <div class="madx-doctor <?php echo esc_attr($p['cls']); ?>">
                             <div class="madx-doctor__icon">

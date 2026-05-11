@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Medila Care - Custom Post Types
  * Description: Custom Post Types for medical practices (ambulance) and career positions with custom fields and taxonomies.
- * Version: 1.3.2
+ * Version: 1.4.0
  * Author: Medila Care
  * Text Domain: medila-ambulance
  */
@@ -141,9 +141,21 @@ function medila_add_ambulance_meta_boxes() {
 function medila_ambulance_meta_box_callback($post) {
     wp_nonce_field('medila_ambulance_meta', 'medila_ambulance_nonce');
 
-    $doctor1     = get_post_meta($post->ID, '_ambulance_doctor', true);
-    $doctor2     = get_post_meta($post->ID, '_ambulance_doctor2', true);
-    $nurse       = get_post_meta($post->ID, '_ambulance_nurse', true);
+    // Multi-doctor / multi-nurse (since v1.4.0). Legacy single-value fields are
+    // migrated into the textarea on first edit so no data is lost.
+    $doctors_multi = get_post_meta($post->ID, '_ambulance_doctors', true);
+    if (!$doctors_multi) {
+        $legacy = [];
+        if ($d1 = get_post_meta($post->ID, '_ambulance_doctor', true))  $legacy[] = $d1;
+        if ($d2 = get_post_meta($post->ID, '_ambulance_doctor2', true)) $legacy[] = $d2;
+        $doctors_multi = $legacy ? implode("\n", $legacy) : '';
+    }
+    $nurses_multi = get_post_meta($post->ID, '_ambulance_nurses', true);
+    if (!$nurses_multi) {
+        $legacy_nurse = get_post_meta($post->ID, '_ambulance_nurse', true);
+        $nurses_multi = $legacy_nurse ?: '';
+    }
+
     $phone       = get_post_meta($post->ID, '_ambulance_phone', true);
     $email       = get_post_meta($post->ID, '_ambulance_email', true);
     $address     = get_post_meta($post->ID, '_ambulance_address', true);
@@ -168,16 +180,14 @@ function medila_ambulance_meta_box_callback($post) {
     <div class="medila-meta-section">
         <h3>Personál</h3>
         <div class="medila-meta-field">
-            <label for="ambulance_doctor">Lékař 1</label>
-            <input type="text" id="ambulance_doctor" name="ambulance_doctor" value="<?php echo esc_attr($doctor1); ?>" placeholder="MUDr. Jan Novák">
+            <label for="ambulance_doctors">Lékaři</label>
+            <textarea id="ambulance_doctors" name="ambulance_doctors" rows="4" placeholder="MUDr. Jan Novák&#10;MUDr. Jana Nováková&#10;MUDr. Petr Svoboda"><?php echo esc_textarea($doctors_multi); ?></textarea>
+            <p class="description">Jeden lékař na řádek. Můžete přidat libovolný počet.</p>
         </div>
         <div class="medila-meta-field">
-            <label for="ambulance_doctor2">Lékař 2</label>
-            <input type="text" id="ambulance_doctor2" name="ambulance_doctor2" value="<?php echo esc_attr($doctor2); ?>" placeholder="MUDr. Jana Nováková (nepovinné)">
-        </div>
-        <div class="medila-meta-field">
-            <label for="ambulance_nurse">Sestra</label>
-            <input type="text" id="ambulance_nurse" name="ambulance_nurse" value="<?php echo esc_attr($nurse); ?>" placeholder="Jana Dvořáková (nepovinné)">
+            <label for="ambulance_nurses">Sestry</label>
+            <textarea id="ambulance_nurses" name="ambulance_nurses" rows="4" placeholder="Jana Dvořáková&#10;Marie Procházková&#10;(nepovinné)"><?php echo esc_textarea($nurses_multi); ?></textarea>
+            <p class="description">Jedna sestra na řádek. Můžete přidat libovolný počet.</p>
         </div>
     </div>
 
@@ -249,14 +259,14 @@ function medila_save_ambulance_meta($post_id) {
     if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
     if (!current_user_can('edit_post', $post_id)) return;
 
-    $text_fields = ['doctor', 'doctor2', 'nurse', 'phone', 'email', 'address', 'insurance', 'registration'];
+    $text_fields = ['phone', 'email', 'address', 'insurance', 'registration'];
     foreach ($text_fields as $field) {
         if (isset($_POST['ambulance_' . $field])) {
             update_post_meta($post_id, '_ambulance_' . $field, sanitize_text_field($_POST['ambulance_' . $field]));
         }
     }
 
-    $textarea_fields = ['hours', 'news', 'services'];
+    $textarea_fields = ['hours', 'news', 'services', 'doctors', 'nurses'];
     foreach ($textarea_fields as $field) {
         if (isset($_POST['ambulance_' . $field])) {
             update_post_meta($post_id, '_ambulance_' . $field, sanitize_textarea_field($_POST['ambulance_' . $field]));
@@ -330,8 +340,9 @@ function medila_ambulance_list_shortcode($atts) {
     while ($query->have_posts()) {
         $query->the_post();
         $id         = get_the_ID();
-        $doctor1    = get_post_meta($id, '_ambulance_doctor', true);
-        $doctor2    = get_post_meta($id, '_ambulance_doctor2', true);
+        $doctors_arr = function_exists('medila_get_ambulance_doctors') ? medila_get_ambulance_doctors($id) : [];
+        $doctor1    = $doctors_arr[0] ?? '';
+        $doctor2    = $doctors_arr[1] ?? '';
         $address    = get_post_meta($id, '_ambulance_address', true);
         $phone      = get_post_meta($id, '_ambulance_phone', true);
         $email      = get_post_meta($id, '_ambulance_email', true);
