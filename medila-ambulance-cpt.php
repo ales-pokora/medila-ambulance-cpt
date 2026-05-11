@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Medila Care - Custom Post Types
  * Description: Custom Post Types for medical practices (ambulance) and career positions with custom fields and taxonomies.
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: Medila Care
  * Text Domain: medila-ambulance
  */
@@ -18,26 +18,40 @@ if (!defined('ABSPATH')) exit;
 //   3. Tag the commit:  git tag v1.2.1 && git push origin --tags
 //   4. WordPress will offer the update in Plugins → Installed Plugins
 // ============================================================================
-if (file_exists(__DIR__ . '/lib/plugin-update-checker/plugin-update-checker.php')) {
-    require __DIR__ . '/lib/plugin-update-checker/plugin-update-checker.php';
+// Defensive: any failure during update-check setup must NOT crash the site.
+// Disable auto-update entirely by defining MEDILA_DISABLE_AUTO_UPDATE in wp-config.php.
+if (!defined('MEDILA_DISABLE_AUTO_UPDATE') && file_exists(__DIR__ . '/lib/plugin-update-checker/plugin-update-checker.php')) {
+    try {
+        require_once __DIR__ . '/lib/plugin-update-checker/plugin-update-checker.php';
 
-    $medilaUpdateChecker = YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
-        'https://github.com/ales-pokora/medila-ambulance-cpt/',
-        __FILE__,
-        'medila-ambulance-cpt'
-    );
+        if (class_exists('YahnisElsts\\PluginUpdateChecker\\v5\\PucFactory')) {
+            $medilaUpdateChecker = YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+                'https://github.com/ales-pokora/medila-ambulance-cpt/',
+                __FILE__,
+                'medila-ambulance-cpt'
+            );
 
-    // Branch to monitor for the latest stable code (only used as fallback if no tags exist)
-    $medilaUpdateChecker->setBranch('main');
+            if ($medilaUpdateChecker && method_exists($medilaUpdateChecker, 'setBranch')) {
+                $medilaUpdateChecker->setBranch('main');
+            }
 
-    // Prefer GitHub release tags over branch HEAD — bump the Version: header before tagging
-    if (method_exists($medilaUpdateChecker->getVcsApi(), 'enableReleaseAssets')) {
-        $medilaUpdateChecker->getVcsApi()->enableReleaseAssets();
-    }
+            if ($medilaUpdateChecker && method_exists($medilaUpdateChecker, 'getVcsApi')) {
+                $vcs = $medilaUpdateChecker->getVcsApi();
+                if ($vcs && method_exists($vcs, 'enableReleaseAssets')) {
+                    $vcs->enableReleaseAssets();
+                }
+            }
 
-    // For PRIVATE repos: define MEDILA_GH_TOKEN in wp-config.php (fine-grained PAT, "Contents: read")
-    if (defined('MEDILA_GH_TOKEN') && MEDILA_GH_TOKEN) {
-        $medilaUpdateChecker->setAuthentication(MEDILA_GH_TOKEN);
+            if (defined('MEDILA_GH_TOKEN') && MEDILA_GH_TOKEN && $medilaUpdateChecker && method_exists($medilaUpdateChecker, 'setAuthentication')) {
+                $medilaUpdateChecker->setAuthentication(MEDILA_GH_TOKEN);
+            }
+        }
+    } catch (\Throwable $e) {
+        // Swallow any error — auto-update is a convenience, not a hard dependency.
+        // Recover by logging and continuing.
+        if (function_exists('error_log')) {
+            error_log('[medila-ambulance-cpt] Auto-updater init failed: ' . $e->getMessage());
+        }
     }
 }
 
