@@ -278,6 +278,79 @@ function medila_amb_registration_shortcode() {
     return '<p class="mad-text">' . nl2br(esc_html($reg)) . '</p>';
 }
 
+// News grid shortcode: [medila_amb_news_grid count="4" title="Aktuality z ordinace"]
+// Renders the latest N news posts (ambulance_news CPT) linked to the current
+// ambulance, with click-through to single news posts and a link to the
+// filtered archive at /aktuality/?amb={id}.
+add_shortcode('medila_amb_news_grid', 'medila_amb_news_grid_shortcode');
+function medila_amb_news_grid_shortcode($atts) {
+    $atts = shortcode_atts([
+        'count'        => 4,
+        'title'        => 'Aktuality z ordinace',
+        'archive_text' => 'Zobrazit všechny aktuality',
+    ], $atts);
+
+    $id = get_the_ID();
+    if (!$id || !function_exists('medila_get_ambulance_news')) return '';
+
+    $news = medila_get_ambulance_news($id, (int) $atts['count']);
+    if (!$news) return '';
+
+    $archive_url = add_query_arg('amb', $id, get_post_type_archive_link('ambulance_news'));
+
+    $out  = '<section class="madx-newsgrid">';
+    $out .= '<div class="madx-newsgrid__head">';
+    $out .= '<h2 class="madx-newsgrid__title">' . esc_html($atts['title']) . '</h2>';
+    if ($archive_url) {
+        $out .= '<a href="' . esc_url($archive_url) . '" class="madx-newsgrid__archive">' . esc_html($atts['archive_text']) . ' <span aria-hidden="true">→</span></a>';
+    }
+    $out .= '</div>';
+
+    $out .= '<div class="madx-newsgrid__items">';
+    foreach ($news as $n) {
+        $thumb   = get_the_post_thumbnail_url($n->ID, 'medium_large') ?: '';
+        $excerpt = $n->post_excerpt ?: wp_trim_words(strip_shortcodes($n->post_content), 22);
+        $date    = get_the_date('j. n. Y', $n);
+
+        $out .= '<a href="' . esc_url(get_permalink($n)) . '" class="madx-newsitem">';
+        if ($thumb) {
+            $out .= '<div class="madx-newsitem__media" style="background-image:url(\'' . esc_url($thumb) . '\');"></div>';
+        } else {
+            $out .= '<div class="madx-newsitem__media madx-newsitem__media--placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>';
+        }
+        $out .= '<div class="madx-newsitem__body">';
+        $out .= '<span class="madx-newsitem__date">' . esc_html($date) . '</span>';
+        $out .= '<h3 class="madx-newsitem__title">' . esc_html($n->post_title) . '</h3>';
+        if ($excerpt) {
+            $out .= '<p class="madx-newsitem__excerpt">' . esc_html($excerpt) . '</p>';
+        }
+        $out .= '<span class="madx-newsitem__cta">Číst více <span aria-hidden="true">→</span></span>';
+        $out .= '</div></a>';
+    }
+    $out .= '</div></section>';
+    return $out;
+}
+
+// Back link on single news pages: [medila_news_back]
+// Renders "← Zpět na ambulance {Name}" — only outputs if a parent ambulance is set.
+add_shortcode('medila_news_back', 'medila_news_back_shortcode');
+function medila_news_back_shortcode($atts) {
+    $atts = shortcode_atts(['text' => 'Zpět na ambulanci'], $atts);
+
+    $id = get_the_ID();
+    if (!$id || get_post_type($id) !== 'ambulance_news') return '';
+    if (!function_exists('medila_get_news_ambulance_id')) return '';
+
+    $amb_id = medila_get_news_ambulance_id($id);
+    if (!$amb_id) return '';
+
+    $amb_link  = get_permalink($amb_id);
+    $amb_title = get_the_title($amb_id);
+    if (!$amb_link) return '';
+
+    return '<a href="' . esc_url($amb_link) . '" class="madx-news-back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg> ' . esc_html($atts['text']) . ' <strong>' . esc_html($amb_title) . '</strong></a>';
+}
+
 // ============================================================================
 // Full ambulance detail layout: [medila_amb_full]
 // ----------------------------------------------------------------------------
@@ -408,18 +481,21 @@ function medila_amb_full_shortcode() {
         </section>
         <?php endif; ?>
 
-        <!-- NEWS BANNER -->
+        <!-- PINNED NOTICE (single-line urgent banner, from _ambulance_news textarea) -->
         <?php if ($news) : ?>
         <section class="madx-news">
             <div class="madx-news__icon">
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
             </div>
             <div class="madx-news__body">
-                <span class="madx-news__label">Aktuality z ordinace</span>
+                <span class="madx-news__label">Důležité oznámení</span>
                 <p><?php echo nl2br(esc_html($news)); ?></p>
             </div>
         </section>
         <?php endif; ?>
+
+        <!-- NEWS GRID (from ambulance_news CPT) -->
+        <?php echo do_shortcode('[medila_amb_news_grid count="4"]'); ?>
 
         <!-- MAIN GRID -->
         <section class="madx-grid">
@@ -752,6 +828,29 @@ function medila_ambulance_detail_styles() {
     .madx-news__label{display:block;font-size:11px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px;}
     .madx-news__body p{margin:0;font-size:16px;line-height:1.7;color:var(--ink);font-weight:500;}
 
+    /* NEWS GRID */
+    .madx-newsgrid{margin-bottom:50px;}
+    .madx-newsgrid__head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+    .madx-newsgrid__title{font-family:"Raleway",sans-serif;font-size:26px;font-weight:800;color:var(--ink);margin:0;letter-spacing:-.3px;}
+    .madx-newsgrid__archive{color:var(--g);font-size:13px;font-weight:700;text-decoration:none;text-transform:uppercase;letter-spacing:.8px;transition:color .2s;}
+    .madx-newsgrid__archive:hover{color:var(--ink);}
+    .madx-newsgrid__items{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;}
+    .madx-newsitem{display:flex;flex-direction:column;background:#fff;border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;box-shadow:0 4px 24px rgba(50,71,71,0.07);border:1px solid #f0f4f3;transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;}
+    .madx-newsitem:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(50,71,71,0.13);border-color:transparent;}
+    .madx-newsitem__media{height:170px;background-size:cover;background-position:center;background-color:#e8f8f4;}
+    .madx-newsitem__media--placeholder{display:flex;align-items:center;justify-content:center;}
+    .madx-newsitem__body{padding:22px 24px 24px;flex:1;display:flex;flex-direction:column;}
+    .madx-newsitem__date{display:inline-block;font-size:11px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+    .madx-newsitem__title{font-family:"Raleway",sans-serif;font-size:18px;font-weight:800;color:var(--ink);margin:0 0 10px;line-height:1.3;letter-spacing:-.2px;transition:color .25s;}
+    .madx-newsitem:hover .madx-newsitem__title{color:var(--g);}
+    .madx-newsitem__excerpt{margin:0 0 16px;font-size:14px;line-height:1.6;color:#666;font-weight:500;flex:1;}
+    .madx-newsitem__cta{color:var(--g);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:auto;}
+
+    /* News single back-link */
+    .madx-news-back{display:inline-flex;align-items:center;gap:6px;color:var(--g);text-decoration:none;font-size:14px;font-weight:600;padding:10px 18px;background:#f2f7f5;border-radius:100px;transition:all .25s;}
+    .madx-news-back:hover{background:var(--g);color:#fff;}
+    .madx-news-back strong{font-weight:700;}
+
     /* GRID */
     .madx-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:40px;}
     .madx-card{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 4px 30px rgba(50,71,71,0.06);transition:all .4s cubic-bezier(.4,0,.2,1);border:1px solid #f0f4f3;}
@@ -857,6 +956,10 @@ function medila_ambulance_detail_styles() {
         .madx-bottom-cta{padding:44px 24px;border-radius:20px;}
         .madx-bottom-cta__title{font-size:24px;}
         .madx-bottom-cta__text{font-size:15px;}
+        .madx-newsgrid__title{font-size:22px;}
+        .madx-newsitem__media{height:140px;}
+        .madx-newsitem__body{padding:18px 20px 20px;}
+        .madx-newsitem__title{font-size:16px;}
     }
     ';
 
