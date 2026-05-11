@@ -588,7 +588,7 @@ function medila_ambulance_detail_styles() {
     .mad-services li{position:relative;padding:8px 0 8px 24px;font-size:15px;color:#444;border-bottom:1px solid #f5f5f5;background:none !important;}
     .mad-services li::marker{content:"" !important;color:transparent !important;}
     .mad-services li:last-child{border-bottom:none;}
-    .mad-services li::before{content:"";position:absolute;left:0;top:15px;width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#00a278,#009ab2);}
+    .mad-services li::before{content:"";position:absolute;left:0;top:15px;width:8px;height:8px;border-radius:50%;background:#00a278;}
 
     /* Card accent bars: solid brand colors instead of gradient */
     .mad-card__accent{background:#009ab2 !important;height:4px;}
@@ -599,8 +599,8 @@ function medila_ambulance_detail_styles() {
     .mad-insurance-tag--link:hover{background:#00a278;color:#fff;transform:translateY(-1px);}
 
     .mad-btn{display:inline-block;padding:16px 36px;border-radius:100px;font-size:14px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;transition:all .3s;cursor:pointer;}
-    .mad-btn--primary{background:linear-gradient(29deg,#00a278 0%,#009ab2 100%);color:#fff;}
-    .mad-btn--primary:hover{background:#270b3a;color:#fff;transform:translateY(-2px);box-shadow:0 6px 20px rgba(39,11,58,.3);}
+    .mad-btn--primary{background:#00a278;color:#fff;}
+    .mad-btn--primary:hover{background:#1a1a2e;color:#fff;transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,26,46,.3);}
     .mad-btn--outline{background:transparent;color:#00a278;border:2px solid #00a278;}
     .mad-btn--outline:hover{background:#00a278;color:#fff;transform:translateY(-2px);}
 
@@ -636,8 +636,7 @@ function medila_ambulance_detail_styles() {
     /* HERO */
     .madx-hero{position:relative;border-radius:28px;overflow:hidden;min-height:440px;display:flex;align-items:center;margin-bottom:60px;isolation:isolate;}
     .madx-hero__bg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0;}
-    .madx-hero__overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,162,120,0.95) 0%,rgba(0,154,178,0.90) 100%);z-index:1;}
-    .madx-hero__overlay::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 20% 100%,rgba(255,255,255,0.12) 0%,transparent 50%),radial-gradient(circle at 80% 0%,rgba(255,255,255,0.08) 0%,transparent 45%);}
+    .madx-hero__overlay{position:absolute;inset:0;background:rgba(0,162,120,0.93);z-index:1;}
     .madx-hero__inner{position:relative;z-index:2;padding:70px 60px;max-width:860px;color:#fff;width:100%;}
 
     .madx-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#fff;padding:8px 18px;border-radius:30px;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;border:1px solid rgba(255,255,255,0.25);margin-bottom:22px;}
@@ -663,22 +662,23 @@ function medila_ambulance_detail_styles() {
     .madx-btn--outline{background:transparent;color:var(--g);border:2px solid var(--g);}
     .madx-btn--outline:hover{background:var(--g);color:#fff;transform:translateY(-2px);box-shadow:0 14px 36px rgba(0,162,120,0.32);}
     .madx-btn--lg{padding:18px 38px;font-size:15px;}
-    .madx-btn--callout{margin-left:auto;flex-shrink:0;}
+    .madx-btn--callout{margin-left:auto;flex-shrink:0;background:#fff;color:var(--b);}
+    .madx-btn--callout:hover{background:var(--ink);color:#fff;}
 
     /* QUICK STRIP */
     .madx-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin:-40px 0 60px;position:relative;z-index:5;}
     .madx-strip__item{display:flex;align-items:center;gap:16px;padding:22px 24px;background:#fff;border-radius:18px;box-shadow:0 12px 40px rgba(50,71,71,0.10);text-decoration:none;color:var(--ink);transition:all .3s ease;border:1px solid #f0f4f3;}
     .madx-strip__item:hover{transform:translateY(-4px);box-shadow:0 22px 50px rgba(50,71,71,0.16);border-color:transparent;}
-    .madx-strip__icon{width:48px;height:48px;background:linear-gradient(135deg,var(--g),var(--b));color:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 18px rgba(0,154,178,0.32);}
+    .madx-strip__icon{width:48px;height:48px;background:var(--g);color:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 18px rgba(0,162,120,0.32);}
     .madx-strip__text{min-width:0;flex:1;}
     .madx-strip__label{display:block;font-size:10.5px;font-weight:700;color:var(--mute);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
     .madx-strip__item strong{display:block;font-size:15px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
     /* NEWS BANNER */
-    .madx-news{display:flex;gap:22px;align-items:flex-start;padding:28px 32px;background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border-left:5px solid #f59e0b;border-radius:18px;margin-bottom:40px;box-shadow:0 4px 24px rgba(245,158,11,0.10);}
-    .madx-news__icon{width:52px;height:52px;background:#f59e0b;color:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 16px rgba(245,158,11,0.32);}
-    .madx-news__label{display:block;font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px;}
-    .madx-news__body p{margin:0;font-size:16px;line-height:1.7;color:#451a03;font-weight:500;}
+    .madx-news{display:flex;gap:22px;align-items:flex-start;padding:28px 32px;background:#f2f7f5;border-left:5px solid var(--g);border-radius:18px;margin-bottom:40px;box-shadow:0 4px 24px rgba(0,162,120,0.08);}
+    .madx-news__icon{width:52px;height:52px;background:var(--g);color:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 16px rgba(0,162,120,0.30);}
+    .madx-news__label{display:block;font-size:11px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px;}
+    .madx-news__body p{margin:0;font-size:16px;line-height:1.7;color:var(--ink);font-weight:500;}
 
     /* GRID */
     .madx-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:40px;}
@@ -687,23 +687,23 @@ function medila_ambulance_detail_styles() {
     .madx-card--full{grid-column:1 / -1;}
     .madx-card__head{display:flex;align-items:center;gap:14px;padding:28px 30px 0;}
     .madx-card__icon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-    .madx-card__icon--green{background:linear-gradient(135deg,#e8f8f4,#d4f1e8);color:var(--g);}
-    .madx-card__icon--blue{background:linear-gradient(135deg,#e6f4f7,#d1eaef);color:var(--b);}
+    .madx-card__icon--green{background:#e8f8f4;color:var(--g);}
+    .madx-card__icon--blue{background:#e6f4f7;color:var(--b);}
     .madx-card__title{font-family:"Raleway",sans-serif;font-size:21px;font-weight:800;color:var(--ink);margin:0;letter-spacing:-.4px;}
     .madx-card__body{padding:22px 30px 30px;}
 
     /* HOURS */
     .madx-hours-wrap{overflow-x:auto;border-radius:14px;}
     .madx-hours{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;}
-    .madx-hours th{background:linear-gradient(135deg,var(--g),var(--b));color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;padding:14px 14px;text-align:center;}
+    .madx-hours th{background:var(--g);color:#fff;font-size:11px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;padding:14px 14px;text-align:center;}
     .madx-hours th:first-child{text-align:left;border-radius:12px 0 0 0;}
     .madx-hours th:last-child{border-radius:0 12px 0 0;}
     .madx-hours td{padding:16px 14px;text-align:center;border-bottom:1px solid #f1f4f3;color:#555;font-weight:500;}
     .madx-hours td:first-child{text-align:left;position:relative;}
     .madx-hours__day{font-weight:800;color:var(--ink);}
-    .madx-hours__today{display:inline-block;margin-left:10px;font-size:10px;background:linear-gradient(135deg,var(--g),var(--b));color:#fff;padding:3px 10px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;vertical-align:1px;}
+    .madx-hours__today{display:inline-block;margin-left:10px;font-size:10px;background:var(--g);color:#fff;padding:3px 10px;border-radius:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;vertical-align:1px;}
     .madx-hours tr:last-child td{border-bottom:none;}
-    .madx-hours tr.is-today td{background:linear-gradient(90deg,rgba(0,162,120,0.07),rgba(0,154,178,0.05));}
+    .madx-hours tr.is-today td{background:rgba(0,162,120,0.08);}
     .madx-hours tr.is-today td:first-child .madx-hours__day{color:var(--g);}
     .madx-hours-simple{display:grid;gap:8px;}
     .madx-hours-simple__row{padding:12px 16px;background:#f8faf9;border-radius:10px;font-size:14px;color:#444;font-weight:500;}
@@ -712,37 +712,36 @@ function medila_ambulance_detail_styles() {
     .madx-services{list-style:none !important;padding:0 !important;margin:0 !important;display:grid;gap:6px;}
     .madx-services li{list-style:none !important;position:relative;padding:14px 18px 14px 56px;font-size:15px;color:#333;font-weight:500;border-radius:12px;transition:all .25s;line-height:1.5;}
     .madx-services li::marker{content:"" !important;}
-    .madx-services li::before{content:"";position:absolute;left:16px;top:50%;transform:translateY(-50%);width:28px;height:28px;background:linear-gradient(135deg,var(--g),var(--b));border-radius:50%;box-shadow:0 4px 10px rgba(0,162,120,0.28);}
+    .madx-services li::before{content:"";position:absolute;left:16px;top:50%;transform:translateY(-50%);width:28px;height:28px;background:var(--g);border-radius:50%;box-shadow:0 4px 10px rgba(0,162,120,0.28);}
     .madx-services li::after{content:"";position:absolute;left:24px;top:50%;transform:translateY(-66%) rotate(45deg);width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;}
     .madx-services li:hover{background:#f5fbf9;padding-left:60px;}
 
     /* INSURANCE */
     .madx-insurance{display:flex;flex-wrap:wrap;gap:10px;}
-    .madx-pill{display:inline-flex;align-items:center;gap:6px;padding:11px 22px;background:linear-gradient(135deg,#f2f7f5,#ebf5f1);color:var(--g);border-radius:30px;font-size:14px;font-weight:700;letter-spacing:.3px;text-decoration:none;border:2px solid transparent;transition:all .28s ease;}
+    .madx-pill{display:inline-flex;align-items:center;gap:6px;padding:11px 22px;background:#f2f7f5;color:var(--g);border-radius:30px;font-size:14px;font-weight:700;letter-spacing:.3px;text-decoration:none;border:2px solid transparent;transition:all .28s ease;}
     .madx-pill--link{cursor:pointer;}
-    .madx-pill--link:hover{background:linear-gradient(135deg,var(--g),var(--b));color:#fff;transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,162,120,0.32);}
+    .madx-pill--link:hover{background:var(--g);color:#fff;transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,162,120,0.32);}
     .madx-pill--link svg{opacity:.6;transition:opacity .25s,transform .25s;}
     .madx-pill--link:hover svg{opacity:1;transform:translate(2px,-2px);}
 
     /* CALLOUT */
-    .madx-callout{display:flex;align-items:center;gap:24px;padding:32px 36px;background:linear-gradient(135deg,var(--ink) 0%,#270b3a 100%);border-radius:22px;color:#fff;margin-bottom:40px;overflow:hidden;position:relative;}
-    .madx-callout::before{content:"";position:absolute;right:-80px;top:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(0,162,120,0.35) 0%,transparent 70%);border-radius:50%;pointer-events:none;}
-    .madx-callout::after{content:"";position:absolute;left:-60px;bottom:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(0,154,178,0.25) 0%,transparent 70%);border-radius:50%;pointer-events:none;}
-    .madx-callout__icon{width:64px;height:64px;background:linear-gradient(135deg,var(--g),var(--b));color:#fff;border-radius:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;box-shadow:0 12px 28px rgba(0,154,178,0.45);}
+    .madx-callout{display:flex;align-items:center;gap:24px;padding:32px 36px;background:var(--b);border-radius:22px;color:#fff;margin-bottom:40px;overflow:hidden;position:relative;}
+    .madx-callout__icon{width:64px;height:64px;background:var(--g);color:#fff;border-radius:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;box-shadow:0 12px 28px rgba(0,0,0,0.20);}
     .madx-callout__body{flex:1;z-index:1;min-width:0;}
-    .madx-callout__label{display:block;font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;}
-    .madx-callout__body p{margin:0;font-size:16px;line-height:1.65;color:rgba(255,255,255,0.92);font-weight:500;}
+    .madx-callout__label{display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,0.75);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px;}
+    .madx-callout__body p{margin:0;font-size:16px;line-height:1.65;color:rgba(255,255,255,0.94);font-weight:500;}
 
     /* MAP */
     .madx-map{border-radius:22px;overflow:hidden;box-shadow:0 4px 30px rgba(50,71,71,0.08);margin-bottom:40px;height:400px;border:1px solid #f0f4f3;}
     .madx-map iframe{width:100%;height:100%;border:0;display:block;}
 
     /* BOTTOM CTA */
-    .madx-bottom-cta{background:linear-gradient(135deg,#f2f7f5 0%,#e8f4f0 100%);border-radius:26px;padding:64px 40px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden;}
-    .madx-bottom-cta::before{content:"";position:absolute;top:-50%;left:-10%;width:120%;height:200%;background:radial-gradient(ellipse at center,rgba(0,162,120,0.06) 0%,transparent 60%);pointer-events:none;}
-    .madx-bottom-cta__title{font-family:"Raleway",sans-serif;font-size:34px;font-weight:800;color:var(--ink);margin:0 0 14px;letter-spacing:-.6px;position:relative;}
-    .madx-bottom-cta__text{font-size:16px;color:#555;margin:0 0 30px;line-height:1.65;max-width:520px;margin-left:auto;margin-right:auto;position:relative;}
-    .madx-bottom-cta__buttons{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;position:relative;}
+    .madx-bottom-cta{background:#f2f7f5;border-radius:26px;padding:64px 40px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden;}
+    .madx-bottom-cta__title{font-family:"Raleway",sans-serif;font-size:34px;font-weight:800;color:var(--ink);margin:0 0 14px;letter-spacing:-.6px;}
+    .madx-bottom-cta__text{font-size:16px;color:#555;margin:0 auto 30px;line-height:1.65;max-width:520px;}
+    .madx-bottom-cta__buttons{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+    .madx-bottom-cta .madx-btn--primary{background:var(--g);color:#fff;}
+    .madx-bottom-cta .madx-btn--primary:hover{background:var(--ink);color:#fff;}
 
     /* RESPONSIVE */
     @media(max-width:980px){
