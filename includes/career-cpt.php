@@ -278,7 +278,7 @@ function medila_career_list_shortcode($atts) {
     }
     .medila-career-card__accent {
         height: 5px;
-        background: linear-gradient(90deg, #00a278 0%, #009ab2 100%);
+        background: #00a278;
     }
     .medila-career-card__body {
         padding: 28px 28px 24px;
@@ -377,10 +377,7 @@ function medila_career_list_shortcode($atts) {
         font-weight: 700;
         letter-spacing: 1px;
         text-transform: uppercase;
-        background: linear-gradient(90deg, #00a278, #009ab2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #00a278;
         transition: gap 0.3s ease;
     }
     .medila-career-card__cta svg {
