@@ -599,6 +599,9 @@ function medila_amb_full_shortcode() {
         </section>
         <?php endif; ?>
 
+        <!-- REVIEWS (from ambulance_review CPT) -->
+        <?php echo do_shortcode('[medila_amb_reviews count="6" show_form="yes"]'); ?>
+
         <!-- BOTTOM CTA -->
         <?php if ($booking_url || $pricelist) : ?>
         <section class="madx-bottom-cta">
@@ -905,6 +908,78 @@ function medila_ambulance_detail_styles() {
     /* MAP */
     .madx-map{border-radius:22px;overflow:hidden;box-shadow:0 4px 30px rgba(50,71,71,0.08);margin-bottom:40px;height:400px;border:1px solid #f0f4f3;}
     .madx-map iframe{width:100%;height:100%;border:0;display:block;}
+
+    /* ============================================================
+       REVIEWS  (.madx-reviews / .madx-rform / .madx-rating-chip)
+       used by [medila_amb_reviews], [medila_amb_review_form],
+       [medila_amb_rating]
+       ============================================================ */
+    .madx-reviews{margin:0 0 40px;padding:40px 44px;background:#fff;border-radius:22px;border:1px solid #f0f4f3;box-shadow:0 4px 24px rgba(50,71,71,0.06);}
+    .madx-reviews__head{display:flex;justify-content:space-between;align-items:center;gap:30px;margin-bottom:28px;flex-wrap:wrap;padding-bottom:24px;border-bottom:1px solid #f0f4f3;}
+    .madx-reviews__title{font-family:"Raleway",sans-serif;font-size:26px;font-weight:800;color:var(--ink);margin:0;letter-spacing:-.3px;}
+    .madx-reviews__summary{display:flex;align-items:center;gap:14px;}
+    .madx-reviews__avg{font-size:34px;font-weight:800;color:var(--ink);line-height:1;display:flex;align-items:baseline;gap:2px;}
+    .madx-reviews__avgmax{font-size:14px;color:var(--mute);font-weight:600;margin-left:4px;}
+    .madx-reviews__big{font-size:22px;letter-spacing:2px;line-height:1;}
+    .madx-reviews__count{color:var(--mute) !important;font-size:13px;font-weight:600;}
+
+    .madx-star{display:inline-block;color:#d4d4d4;line-height:1;}
+    .madx-star--full{color:#f59e0b;}
+    .madx-star--empty{color:#d4d4d4;}
+    .madx-star--half{position:relative;color:#d4d4d4;display:inline-block;}
+    .madx-star--half > span{position:absolute;top:0;left:0;width:50%;overflow:hidden;color:#f59e0b;}
+
+    .madx-reviews__list{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-bottom:30px;}
+    .madx-review{background:#f8faf9;padding:22px 24px;border-radius:14px;border:1px solid #f0f4f3;}
+    .madx-review__head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;flex-wrap:wrap;}
+    .madx-review__author{font-weight:700;color:var(--ink) !important;font-size:14.5px;}
+    .madx-review__stars{font-size:15px;letter-spacing:1px;}
+    .madx-review__content{font-size:14px;line-height:1.65;color:#444 !important;margin:0 0 10px;font-weight:500;}
+    .madx-review__date{font-size:11px;color:var(--mute) !important;font-weight:600;text-transform:uppercase;letter-spacing:.6px;}
+    .madx-reviews__empty{font-size:15px;color:#666;margin:0 0 28px;text-align:center;padding:32px 24px;background:#f8faf9;border-radius:14px;border:1px dashed #e0e6e3;}
+
+    /* Compact rating chip (for hero / listing cards) */
+    .madx-rating-chip{display:inline-flex;align-items:center;gap:8px;background:#fff;padding:8px 14px;border-radius:30px;box-shadow:0 2px 10px rgba(50,71,71,0.08);font-size:14px;}
+    .madx-rating-chip__stars{font-size:14px;letter-spacing:1px;line-height:1;}
+    .madx-rating-chip__value{font-weight:800;color:var(--ink);font-size:14px;}
+    .madx-rating-chip__count{color:var(--mute);font-size:12px;font-weight:600;}
+
+    /* Submission form */
+    .madx-rform-wrap{margin-top:30px;padding-top:30px;border-top:1px solid #f0f4f3;}
+    .madx-rform__title{font-family:"Raleway",sans-serif;font-size:22px;font-weight:800;color:var(--ink);margin:0 0 6px;letter-spacing:-.2px;}
+    .madx-rform__sub{font-size:14px;color:var(--mute);margin:0 0 22px;}
+    .madx-rform__msg{padding:14px 18px;border-radius:12px;margin-bottom:22px;font-weight:600;font-size:14px;}
+    .madx-rform__msg--success{background:#e8f8f4;color:var(--g);border:1px solid #c4ecd9;}
+    .madx-rform__msg--error{background:#fef2f2;color:#dc2626;border:1px solid #fecaca;}
+
+    .madx-rform{display:block;}
+    .madx-rform__row{margin-bottom:18px;}
+    .madx-rform__row > label{display:block;font-weight:700;color:var(--ink);font-size:13px;margin-bottom:8px;letter-spacing:.2px;}
+    .madx-rform__row input[type="text"],
+    .madx-rform__row textarea{width:100%;padding:13px 16px;border:1px solid #e0e6e3;border-radius:12px;font-family:inherit;font-size:14px;color:var(--ink);background:#fff;transition:border-color .2s,box-shadow .2s;}
+    .madx-rform__row input[type="text"]:focus,
+    .madx-rform__row textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,162,120,0.12);}
+    .madx-rform__row textarea{resize:vertical;min-height:96px;font-family:"Poppins","Raleway",sans-serif;}
+
+    /* Star rating input — flex row-reverse for the classic ~ sibling trick */
+    .madx-stars-input{display:inline-flex;flex-direction:row-reverse;justify-content:flex-end;}
+    .madx-stars-input input{position:absolute;opacity:0;pointer-events:none;}
+    .madx-stars-input label{cursor:pointer;color:#d4d4d4;margin:0 3px;font-size:32px;line-height:1;transition:color .15s,transform .15s;}
+    .madx-stars-input label:hover{transform:scale(1.08);}
+    .madx-stars-input input:checked ~ label{color:#f59e0b;}
+    .madx-stars-input:hover label{color:#d4d4d4 !important;}
+    .madx-stars-input label:hover,
+    .madx-stars-input label:hover ~ label{color:#f59e0b !important;}
+    .madx-stars-input input:focus-visible + label{outline:2px solid var(--g);outline-offset:3px;border-radius:4px;}
+
+    @media(max-width:600px){
+        .madx-reviews{padding:28px 22px;border-radius:18px;}
+        .madx-reviews__head{flex-direction:column;align-items:flex-start;gap:18px;}
+        .madx-reviews__title{font-size:22px;}
+        .madx-reviews__summary{flex-wrap:wrap;}
+        .madx-rform__title{font-size:18px;}
+        .madx-stars-input label{font-size:28px;margin:0 2px;}
+    }
 
     /* BOTTOM CTA */
     .madx-bottom-cta{background:#f2f7f5;border-radius:26px;padding:64px 40px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden;}
