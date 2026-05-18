@@ -400,6 +400,136 @@ function medila_career_list_shortcode($atts) {
     return $output;
 }
 
+// =============================================================================
+// One-shot migration tool: copy WP Posts (Příspěvky) into career_position.
+// Admin → Kariéra → Import z článků. Idempotent — already-migrated posts are
+// tracked via _career_migrated_from_post_id and skipped on re-run.
+// =============================================================================
+add_action('admin_menu', 'medila_career_register_migration_page');
+function medila_career_register_migration_page() {
+    add_submenu_page(
+        'edit.php?post_type=career_position',
+        'Import z článků',
+        'Import z článků',
+        'manage_options',
+        'medila-career-migrate',
+        'medila_career_render_migration_page'
+    );
+}
+
+function medila_career_render_migration_page() {
+    if (!current_user_can('manage_options')) return;
+
+    $message = '';
+    if (!empty($_POST['medila_career_migrate']) && check_admin_referer('medila_career_migrate', 'medila_career_migrate_nonce')) {
+        $result = medila_career_migrate_posts();
+        $message = sprintf(
+            '<div class="notice notice-success is-dismissible"><p><strong>Migrace dokončena.</strong> Vytvořeno: %d, přeskočeno (již migrováno): %d.</p></div>',
+            (int) $result['created'],
+            (int) $result['skipped']
+        );
+    }
+
+    $all_post_ids = get_posts([
+        'post_type'      => 'post',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+    ]);
+    $migrated_ids = get_posts([
+        'post_type'      => 'career_position',
+        'post_status'    => 'any',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+        'meta_query'     => [[
+            'key'     => '_career_migrated_from_post_id',
+            'compare' => 'EXISTS',
+        ]],
+    ]);
+    $total     = count($all_post_ids);
+    $migrated  = count($migrated_ids);
+    $remaining = max(0, $total - $migrated);
+    ?>
+    <div class="wrap">
+        <h1>Import článků (Příspěvky) do Kariéra</h1>
+        <?php echo $message; ?>
+        <p>Tento nástroj zkopíruje všechny publikované Příspěvky (WP Posts) jako nové pozice v Kariéře.
+        Originální Příspěvky zůstanou beze změny. Jeden článek se nemigruje dvakrát.</p>
+        <p>Pole specifická pro Kariéru (lokalita, typ úvazku, plat, ikona, obor) zůstanou po migraci prázdná &mdash; doplňte je ručně.</p>
+        <table class="widefat striped" style="max-width:520px;margin-top:16px;">
+            <tbody>
+                <tr><th style="text-align:left;">Publikované Příspěvky</th><td><?php echo (int) $total; ?></td></tr>
+                <tr><th style="text-align:left;">Již migrováno</th><td><?php echo (int) $migrated; ?></td></tr>
+                <tr><th style="text-align:left;">Zbývá migrovat</th><td><strong><?php echo (int) $remaining; ?></strong></td></tr>
+            </tbody>
+        </table>
+        <?php if ($remaining > 0) : ?>
+            <form method="post" style="margin-top:24px;" onsubmit="return confirm('Opravdu spustit migraci? Vytvoří se <?php echo (int) $remaining; ?> nových pozic v Kariéře.');">
+                <?php wp_nonce_field('medila_career_migrate', 'medila_career_migrate_nonce'); ?>
+                <button type="submit" name="medila_career_migrate" value="1" class="button button-primary button-large">Spustit migraci (<?php echo (int) $remaining; ?>)</button>
+            </form>
+        <?php else : ?>
+            <p style="margin-top:24px;"><em>Nejsou žádné Příspěvky k migraci.</em></p>
+        <?php endif; ?>
+    </div>
+    <?php
+}
+
+function medila_career_migrate_posts() {
+    $created = 0;
+    $skipped = 0;
+
+    $posts = get_posts([
+        'post_type'      => 'post',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'orderby'        => 'date',
+        'order'          => 'DESC',
+    ]);
+
+    foreach ($posts as $post) {
+        $existing = get_posts([
+            'post_type'      => 'career_position',
+            'post_status'    => 'any',
+            'posts_per_page' => 1,
+            'fields'         => 'ids',
+            'meta_query'     => [[
+                'key'   => '_career_migrated_from_post_id',
+                'value' => (int) $post->ID,
+            ]],
+        ]);
+        if ($existing) {
+            $skipped++;
+            continue;
+        }
+
+        $new_id = wp_insert_post([
+            'post_type'    => 'career_position',
+            'post_title'   => $post->post_title,
+            'post_content' => $post->post_content,
+            'post_excerpt' => $post->post_excerpt,
+            'post_status'  => 'publish',
+            'post_date'    => $post->post_date,
+            'post_author'  => $post->post_author,
+        ], true);
+
+        if (is_wp_error($new_id) || !$new_id) {
+            continue;
+        }
+
+        update_post_meta($new_id, '_career_migrated_from_post_id', (int) $post->ID);
+
+        $thumb_id = get_post_thumbnail_id($post->ID);
+        if ($thumb_id) {
+            set_post_thumbnail($new_id, $thumb_id);
+        }
+
+        $created++;
+    }
+
+    return ['created' => $created, 'skipped' => $skipped];
+}
+
 // Single career_position styles — hide default post meta, add navbar breathing room
 add_action('wp_enqueue_scripts', 'medila_career_detail_styles');
 function medila_career_detail_styles() {
