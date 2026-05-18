@@ -383,7 +383,7 @@ function medila_ambulance_list_shortcode($atts) {
     }
 
     $cols = intval($atts['columns']);
-    $output = '<div class="medila-ambulance-grid" style="display:grid;grid-template-columns:repeat(' . $cols . ',1fr);gap:30px;">';
+    $output = '<div class="medila-ambulance-grid">';
 
     while ($query->have_posts()) {
         $query->the_post();
@@ -397,61 +397,197 @@ function medila_ambulance_list_shortcode($atts) {
         $insurance  = get_post_meta($id, '_ambulance_insurance', true);
         $specs      = get_the_terms($id, 'specialization');
         $spec_name  = ($specs && !is_wp_error($specs)) ? $specs[0]->name : '';
-        $thumbnail  = get_the_post_thumbnail_url($id, 'medium_large') ?: '';
 
-        $output .= '<a href="' . get_permalink() . '" class="medila-ambulance-card" style="text-decoration:none;color:inherit;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 15px rgba(0,0,0,0.08);transition:transform 0.3s,box-shadow 0.3s;display:flex;flex-direction:column;">';
+        $output .= '<a href="' . get_permalink() . '" class="medila-ambulance-card">';
 
-        if ($thumbnail) {
-            $output .= '<div style="height:200px;overflow:hidden;"><img src="' . esc_url($thumbnail) . '" alt="' . esc_attr(get_the_title()) . '" style="width:100%;height:100%;object-fit:cover;"></div>';
-        }
+        // Top accent bar (brand blue)
+        $output .= '<div class="medila-ambulance-card__accent"></div>';
 
-        $output .= '<div style="padding:24px;flex:1;display:flex;flex-direction:column;">';
+        $output .= '<div class="medila-ambulance-card__body">';
 
         if ($spec_name) {
-            $output .= '<span style="display:inline-block;background:#e6f7f3;color:#00a278;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:12px;width:fit-content;">' . esc_html($spec_name) . '</span>';
+            $output .= '<span class="medila-ambulance-card__badge">' . esc_html($spec_name) . '</span>';
         }
 
-        $output .= '<h3 style="margin:0 0 8px;font-size:20px;color:#1a1a1a;font-weight:700;">' . get_the_title() . '</h3>';
+        $output .= '<h3 class="medila-ambulance-card__title">' . get_the_title() . '</h3>';
 
         if ($doctor1 || $doctor2) {
-            $output .= '<div style="margin:0 0 12px;">';
+            $output .= '<div class="medila-ambulance-card__doctors">';
             if ($doctor1) {
-                $output .= '<p style="margin:0 0 2px;color:#00a278;font-size:14px;font-weight:500;">' . esc_html($doctor1) . '</p>';
+                $output .= '<span class="medila-ambulance-card__doctor">' . esc_html($doctor1) . '</span>';
             }
             if ($doctor2) {
-                $output .= '<p style="margin:0;color:#00a278;font-size:14px;font-weight:500;">' . esc_html($doctor2) . '</p>';
+                $output .= '<span class="medila-ambulance-card__doctor">' . esc_html($doctor2) . '</span>';
             }
             $output .= '</div>';
         }
 
         if ($address) {
-            $output .= '<p style="margin:0 0 6px;color:#666;font-size:13px;line-height:1.5;"><svg width="12" height="12" viewBox="0 0 24 24" fill="#009ab2" style="vertical-align:-1px;margin-right:5px;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>' . esc_html($address) . '</p>';
+            $output .= '<p class="medila-ambulance-card__meta-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="#009ab2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>' . esc_html($address) . '</p>';
         }
 
         if ($phone) {
-            $output .= '<p style="margin:0 0 6px;color:#666;font-size:13px;line-height:1.5;"><svg width="12" height="12" viewBox="0 0 24 24" fill="#009ab2" style="vertical-align:-1px;margin-right:5px;"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2z"/></svg>' . esc_html($phone) . '</p>';
+            $output .= '<p class="medila-ambulance-card__meta-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="#009ab2"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2z"/></svg>' . esc_html($phone) . '</p>';
         }
 
         if ($email) {
-            $output .= '<p style="margin:0 0 6px;color:#666;font-size:13px;line-height:1.5;"><svg width="12" height="12" viewBox="0 0 24 24" fill="#009ab2" style="vertical-align:-1px;margin-right:5px;"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>' . esc_html($email) . '</p>';
+            $output .= '<p class="medila-ambulance-card__meta-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="#009ab2"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>' . esc_html($email) . '</p>';
         }
 
+        // Insurance — names only, drop any "Name|URL" url portion
         if ($insurance) {
-            $output .= '<p style="margin:0;color:#888;font-size:12px;line-height:1.5;margin-top:4px;"><strong>Pojišťovny:</strong> ' . esc_html($insurance) . '</p>';
+            $items = array_filter(array_map('trim', explode(',', $insurance)));
+            $names = [];
+            foreach ($items as $item) {
+                $parts = array_map('trim', explode('|', $item, 2));
+                if (!empty($parts[0])) {
+                    $names[] = $parts[0];
+                }
+            }
+            if ($names) {
+                $output .= '<div class="medila-ambulance-card__insurance">';
+                foreach ($names as $n) {
+                    $output .= '<span class="medila-ambulance-card__insurance-tag">' . esc_html($n) . '</span>';
+                }
+                $output .= '</div>';
+            }
         }
 
-        $output .= '<div style="margin-top:auto;padding-top:16px;"><span style="color:#009ab2;font-size:14px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;">Zobrazit detail &rarr;</span></div>';
+        $output .= '<div class="medila-ambulance-card__cta"><span>Zobrazit detail</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>';
 
         $output .= '</div></a>';
     }
 
     $output .= '</div>';
 
-    // Responsive CSS
     $output .= '<style>
-        .medila-ambulance-card:hover { transform:translateY(-4px); box-shadow:0 8px 30px rgba(0,0,0,0.12) !important; }
-        @media (max-width:980px) { .medila-ambulance-grid { grid-template-columns:repeat(2,1fr) !important; } }
-        @media (max-width:480px) { .medila-ambulance-grid { grid-template-columns:1fr !important; gap:20px !important; } }
+    .medila-ambulance-grid {
+        display: grid;
+        grid-template-columns: repeat(' . $cols . ', 1fr);
+        gap: 24px;
+    }
+    .medila-ambulance-card {
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border-radius: 14px;
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+        box-shadow: 0 2px 20px rgba(50,71,71,0.07);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .medila-ambulance-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 40px rgba(50,71,71,0.14);
+    }
+    .medila-ambulance-card__accent {
+        height: 5px;
+        background: #009ab2;
+    }
+    .medila-ambulance-card__body {
+        padding: 28px 28px 24px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+    .medila-ambulance-card__badge {
+        display: inline-block;
+        padding: 4px 10px;
+        background: #e6f4f7;
+        color: #009ab2;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+        width: fit-content;
+    }
+    .medila-ambulance-card__title {
+        font-family: "Raleway", sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin: 0 0 10px;
+        line-height: 1.35;
+    }
+    .medila-ambulance-card:hover .medila-ambulance-card__title {
+        color: #009ab2;
+    }
+    .medila-ambulance-card__doctors {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin-bottom: 14px;
+    }
+    .medila-ambulance-card__doctor {
+        color: #00a278;
+        font-size: 14px;
+        font-weight: 600;
+    }
+    .medila-ambulance-card__meta-row {
+        font-size: 13px;
+        color: #555;
+        line-height: 1.55;
+        margin: 0 0 6px;
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+    }
+    .medila-ambulance-card__meta-row svg {
+        flex-shrink: 0;
+        margin-top: 3px;
+    }
+    .medila-ambulance-card__insurance {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 14px;
+    }
+    .medila-ambulance-card__insurance-tag {
+        display: inline-block;
+        padding: 4px 10px;
+        background: #f2f7f5;
+        color: #00a278;
+        border-radius: 16px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+    .medila-ambulance-card__cta {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 20px;
+        padding-top: 18px;
+        border-top: 1px solid #f0f0f0;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #009ab2;
+        transition: gap 0.3s ease;
+    }
+    .medila-ambulance-card__cta svg {
+        stroke: #009ab2;
+        transition: transform 0.3s ease;
+    }
+    .medila-ambulance-card:hover .medila-ambulance-card__cta {
+        gap: 10px;
+    }
+    .medila-ambulance-card:hover .medila-ambulance-card__cta svg {
+        transform: translateX(4px);
+    }
+    @media (max-width: 980px) {
+        .medila-ambulance-grid { grid-template-columns: 1fr 1fr; }
+        .medila-ambulance-card__body { padding: 22px 22px 20px; }
+    }
+    @media (max-width: 600px) {
+        .medila-ambulance-grid { grid-template-columns: 1fr; gap: 16px; }
+        .medila-ambulance-card__body { padding: 20px 18px 18px; }
+        .medila-ambulance-card__title { font-size: 18px; }
+    }
     </style>';
 
     wp_reset_postdata();
