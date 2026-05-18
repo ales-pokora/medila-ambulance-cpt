@@ -432,7 +432,7 @@ function medila_career_render_migration_page() {
 
     $all_post_ids = get_posts([
         'post_type'      => 'post',
-        'post_status'    => 'publish',
+        'post_status'    => ['publish', 'draft', 'pending', 'private', 'future'],
         'posts_per_page' => -1,
         'fields'         => 'ids',
     ]);
@@ -453,12 +453,12 @@ function medila_career_render_migration_page() {
     <div class="wrap">
         <h1>Import článků (Příspěvky) do Kariéra</h1>
         <?php echo $message; ?>
-        <p>Tento nástroj zkopíruje všechny publikované Příspěvky (WP Posts) jako nové pozice v Kariéře.
-        Originální Příspěvky zůstanou beze změny. Jeden článek se nemigruje dvakrát.</p>
+        <p>Tento nástroj zkopíruje všechny Příspěvky (WP Posts) jako nové pozice v Kariéře, včetně rozpracovaných (draft, pending, private, future). Stav článku se zachová &mdash; draft zůstane draftem.</p>
+        <p>Originální Příspěvky zůstanou beze změny. Jeden článek se nemigruje dvakrát.</p>
         <p>Pole specifická pro Kariéru (lokalita, typ úvazku, plat, ikona, obor) zůstanou po migraci prázdná &mdash; doplňte je ručně.</p>
         <table class="widefat striped" style="max-width:520px;margin-top:16px;">
             <tbody>
-                <tr><th style="text-align:left;">Publikované Příspěvky</th><td><?php echo (int) $total; ?></td></tr>
+                <tr><th style="text-align:left;">Příspěvky (publish / draft / pending / private / future)</th><td><?php echo (int) $total; ?></td></tr>
                 <tr><th style="text-align:left;">Již migrováno</th><td><?php echo (int) $migrated; ?></td></tr>
                 <tr><th style="text-align:left;">Zbývá migrovat</th><td><strong><?php echo (int) $remaining; ?></strong></td></tr>
             </tbody>
@@ -481,7 +481,7 @@ function medila_career_migrate_posts() {
 
     $posts = get_posts([
         'post_type'      => 'post',
-        'post_status'    => 'publish',
+        'post_status'    => ['publish', 'draft', 'pending', 'private', 'future'],
         'posts_per_page' => -1,
         'orderby'        => 'date',
         'order'          => 'DESC',
@@ -508,7 +508,7 @@ function medila_career_migrate_posts() {
             'post_title'   => $post->post_title,
             'post_content' => $post->post_content,
             'post_excerpt' => $post->post_excerpt,
-            'post_status'  => 'publish',
+            'post_status'  => $post->post_status,
             'post_date'    => $post->post_date,
             'post_author'  => $post->post_author,
         ], true);
