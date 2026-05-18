@@ -26,7 +26,7 @@ function medila_register_general_news_cpt() {
         'labels' => [
             'name'               => 'Novinky',
             'singular_name'      => 'Novinka',
-            'menu_name'          => 'Novinky',
+            'menu_name'          => 'Novinky (obecné)',
             'add_new'            => 'Přidat novinku',
             'add_new_item'       => 'Přidat novou novinku',
             'edit_item'          => 'Upravit novinku',

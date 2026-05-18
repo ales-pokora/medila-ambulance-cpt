@@ -15,7 +15,7 @@ function medila_register_ambulance_news_cpt() {
     $labels = [
         'name'               => 'Aktuality',
         'singular_name'      => 'Aktualita',
-        'menu_name'          => 'Aktuality',
+        'menu_name'          => 'Aktuality (ambulance)',
         'add_new'            => 'Přidat aktualitu',
         'add_new_item'       => 'Přidat novou aktualitu',
         'edit_item'          => 'Upravit aktualitu',
