@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Medila Care - Custom Post Types
  * Description: Custom Post Types for medical practices (ambulance) and career positions with custom fields and taxonomies.
- * Version: 1.12.1
+ * Version: 1.12.2
  * Author: Medila Care
  * Text Domain: medila-ambulance
  */
@@ -28,6 +28,17 @@ if (!defined('MEDILA_PLUGIN_FILE')) {
 if (!defined('MEDILA_DISABLE_AUTO_UPDATE') && file_exists(__DIR__ . '/lib/plugin-update-checker/plugin-update-checker.php')) {
     try {
         require_once __DIR__ . '/lib/plugin-update-checker/plugin-update-checker.php';
+
+        // PUC's autoloader can fail to find Parsedown when multiple plugins ship
+        // their own copy of PUC v5p6 — the first one to load registers the
+        // autoloader with its own libraryDir, leaving Parsedown unreachable for
+        // any subsequent plugin. Load Parsedown directly so it's always defined.
+        if (!class_exists('Parsedown', false)) {
+            $medila_parsedown = __DIR__ . '/lib/plugin-update-checker/vendor/ParsedownModern.php';
+            if (file_exists($medila_parsedown)) {
+                require_once $medila_parsedown;
+            }
+        }
 
         if (class_exists('YahnisElsts\\PluginUpdateChecker\\v5\\PucFactory')) {
             $medilaUpdateChecker = YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
