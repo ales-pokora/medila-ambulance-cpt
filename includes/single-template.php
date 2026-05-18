@@ -101,19 +101,27 @@ function medila_amb_nurses_shortcode() {
     return $output . '</div>';
 }
 
-// Phone (hero style) shortcode: [medila_amb_phone_hero label="Telefon:"]
+// Phone (hero style) shortcode: [medila_amb_phone_hero label="Telefon:" book_text="Objednat"]
 add_shortcode('medila_amb_phone_hero', 'medila_amb_phone_hero_shortcode');
 function medila_amb_phone_hero_shortcode($atts) {
-    $atts = shortcode_atts(['label' => 'Telefon:'], $atts);
-    $phone = get_post_meta(get_the_ID(), '_ambulance_phone', true);
+    $atts = shortcode_atts([
+        'label'     => 'Telefon:',
+        'book_text' => 'Objednat',
+    ], $atts);
+    $id = get_the_ID();
+    $phone       = get_post_meta($id, '_ambulance_phone', true);
+    $booking_url = get_post_meta($id, '_ambulance_booking_url', true);
     if (!$phone) return '';
 
-    $tel = preg_replace('/\s+/', '', $phone);
-    $output  = '<div class="mad-phone-hero">';
+    $output = '<div class="mad-phone-hero">';
     if ($atts['label']) {
         $output .= '<span class="mad-phone-hero__label">' . esc_html($atts['label']) . '</span>';
     }
+    $tel = preg_replace('/\s+/', '', $phone);
     $output .= '<a href="tel:' . esc_attr($tel) . '" class="mad-phone-hero__number"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2.2" style="vertical-align:-3px;margin-right:8px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>' . esc_html($phone) . '</a>';
+    if ($booking_url) {
+        $output .= '<a href="' . esc_url($booking_url) . '" target="_blank" rel="noopener" class="mad-btn mad-btn--primary mad-phone-hero__book">' . esc_html($atts['book_text']) . '</a>';
+    }
     $output .= '</div>';
     return $output;
 }
@@ -755,6 +763,12 @@ function medila_ambulance_detail_styles() {
 
     .mad-text{font-size:15px;line-height:1.8;color:#555;margin:0;}
 
+    /* Breathing room between floating navbar and hero on ambulance single */
+    body.single-ambulance #main-content{padding-top:60px;}
+    @media(max-width:980px){
+        body.single-ambulance #main-content{padding-top:40px;}
+    }
+
     /* Hide default theme post title and meta (autor / date) on single ambulance */
     body.single-ambulance .et_post_meta_wrapper,
     body.single-ambulance h1.entry-title,
@@ -766,6 +780,17 @@ function medila_ambulance_detail_styles() {
     body.single-ambulance .breadcrumbs,
     body.single-ambulance #breadcrumbs{display:none !important;}
 
+    /* Mobile: reclaim side gutters on ambulance single so cards use more of the viewport
+       and long contact text (address/email/phone) cannot overflow the card. */
+    @media(max-width:980px){
+        body.single-ambulance .et_pb_section{padding-left:0 !important;padding-right:0 !important;}
+        body.single-ambulance .et_pb_row{padding-left:14px !important;padding-right:14px !important;width:100% !important;max-width:100% !important;}
+        body.single-ambulance .et_pb_column{margin-bottom:14px;}
+        body.single-ambulance .et_pb_blurb_content,
+        body.single-ambulance .et_pb_blurb_container,
+        body.single-ambulance .et_pb_blurb_description{min-width:0;word-break:break-word;overflow-wrap:anywhere;}
+        body.single-ambulance .et_pb_text_inner{word-break:break-word;overflow-wrap:anywhere;}
+    }
     @media(max-width:600px){
         .mad-doctors{flex-direction:column;gap:8px;}
         .mad-doctor-chip{font-size:14px;padding:6px 14px;}
@@ -774,6 +799,7 @@ function medila_ambulance_detail_styles() {
         .mad-hours-table{font-size:12px;}
         .mad-hours-table th,.mad-hours-table td{padding:8px 6px;}
         .mad-btn{padding:14px 28px;font-size:13px;width:100%;text-align:center;}
+        body.single-ambulance .et_pb_row{padding-left:10px !important;padding-right:10px !important;}
     }
 
     /* ============================================================
