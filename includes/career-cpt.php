@@ -399,3 +399,30 @@ function medila_career_list_shortcode($atts) {
     wp_reset_postdata();
     return $output;
 }
+
+// Single career_position styles — hide default post meta, add navbar breathing room
+add_action('wp_enqueue_scripts', 'medila_career_detail_styles');
+function medila_career_detail_styles() {
+    if (!is_singular('career_position')) return;
+
+    $css = '
+    /* Breathing room between floating navbar and H1 on single career page */
+    body.single-career_position #main-content{padding-top:60px;}
+    @media(max-width:980px){
+        body.single-career_position #main-content{padding-top:40px;}
+    }
+
+    /* Hide default theme post meta (autor / date) — keep the H1 visible */
+    body.single-career_position .et_post_meta_wrapper p.post-meta,
+    body.single-career_position .post-meta,
+    body.single-career_position .et_pb_title_meta_container,
+    body.single-career_position #left-area > article > .et_post_meta_wrapper p.post-meta,
+    body.single-career_position .breadcrumb,
+    body.single-career_position .breadcrumbs,
+    body.single-career_position #breadcrumbs{display:none !important;}
+    ';
+
+    wp_register_style('medila-career-detail', false);
+    wp_enqueue_style('medila-career-detail');
+    wp_add_inline_style('medila-career-detail', $css);
+}
