@@ -147,13 +147,11 @@ function medila_career_list_shortcode($atts) {
     $atts = shortcode_atts([
         'count'      => 12,
         'department' => '',
-        'category'   => '',
         'columns'    => 2,
-        'post_type'  => 'career_position',
     ], $atts);
 
     $args = [
-        'post_type'      => sanitize_text_field($atts['post_type']),
+        'post_type'      => 'career_position',
         'posts_per_page' => intval($atts['count']),
         'post_status'    => 'publish',
         'orderby'        => 'date',
@@ -166,11 +164,6 @@ function medila_career_list_shortcode($atts) {
             'field'    => 'slug',
             'terms'    => explode(',', $atts['department']),
         ];
-    }
-
-    // Support filtering by regular post category (when using post_type="post")
-    if ($atts['category']) {
-        $args['category_name'] = sanitize_text_field($atts['category']);
     }
 
     $query = new WP_Query($args);
