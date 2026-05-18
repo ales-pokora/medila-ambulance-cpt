@@ -1015,8 +1015,8 @@ function medila_ambulance_detail_styles() {
     .madx-bottom-cta__title{font-family:"Raleway",sans-serif;font-size:34px;font-weight:800;color:var(--ink);margin:0 0 14px;letter-spacing:-.6px;}
     .madx-bottom-cta__text{font-size:16px;color:#555;margin:0 auto 30px;line-height:1.65;max-width:520px;}
     .madx-bottom-cta__buttons{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
-    .madx-bottom-cta .madx-btn--primary{background:var(--g);color:#fff;}
-    .madx-bottom-cta .madx-btn--primary:hover{background:var(--ink);color:#fff;}
+    .madx-bottom-cta .madx-btn--primary{background:var(--g);color:#fff !important;}
+    .madx-bottom-cta .madx-btn--primary:hover{background:var(--ink);color:#fff !important;}
 
     /* RESPONSIVE */
     @media(max-width:980px){
