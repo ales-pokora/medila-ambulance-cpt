@@ -66,7 +66,9 @@ function medila_places_build_facility($row, $post) {
         'lng'         => $coords['lng'],
         'type'        => '',
         'type_label'  => '',
-        'address'     => $address,
+        // Street only: the map composes "address, zip city" itself, so passing
+        // the full address here printed the town twice.
+        'address'     => medila_places_street_from_address($address),
         'city'        => medila_places_city_from_address($address),
         'zip'         => medila_places_zip_from_address($address),
         'phone'       => (string) get_post_meta($post->ID, '_ambulance_phone', true),
@@ -74,7 +76,7 @@ function medila_places_build_facility($row, $post) {
         // Sends the map's primary CTA to the ambulance detail page.
         'website'     => get_permalink($post),
         'hours'       => (string) get_post_meta($post->ID, '_ambulance_hours', true),
-        'description' => wp_strip_all_tags(get_the_excerpt($post)),
+        'description' => medila_places_description($post),
         'image'       => $thumb ? $thumb : '',
     ];
 }
@@ -150,6 +152,51 @@ function medila_places_invalidate_coordinates($post_id) {
 // Addresses are entered free-form, e.g. "Knížete Václava 64, 439 23 Lenešice".
 // The map only uses city/zip for the info window, so a best-effort read is
 // enough — an unparseable address still shows in full via the 'address' key.
+
+/**
+ * Only a hand-written excerpt is safe to show.
+ *
+ * get_the_excerpt() falls back to trimmed post_content, and an ambulance's
+ * content is a Divi builder shortcode — that dumped raw [et_pb_section ...]
+ * markup into the map's detail modal.
+ */
+function medila_places_description($post) {
+    $excerpt = trim((string) $post->post_excerpt);
+    if ($excerpt === '') {
+        return '';
+    }
+
+    return wp_strip_all_tags(strip_shortcodes($excerpt));
+}
+
+/**
+ * Everything before the part carrying the postcode:
+ * "Uprkova 1584/6, 621 00 Brno, Řečkovice" -> "Uprkova 1584/6".
+ */
+function medila_places_street_from_address($address) {
+    $parts = array_values(array_filter(array_map('trim', explode(',', $address))));
+    if (!$parts) {
+        return '';
+    }
+
+    $street    = [];
+    $found_zip = false;
+    foreach ($parts as $part) {
+        if (preg_match('/\d{3}\s?\d{2}/u', $part)) {
+            $found_zip = true;
+            break;
+        }
+        $street[] = $part;
+    }
+
+    // With no postcode to split on, the last part is what the city falls back
+    // to — drop it here so the town isn't printed twice.
+    if (!$found_zip) {
+        array_pop($street);
+    }
+
+    return implode(', ', $street);
+}
 
 function medila_places_zip_from_address($address) {
     if (preg_match('/\b(\d{3}\s?\d{2})\b/u', $address, $m)) {
