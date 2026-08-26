@@ -148,9 +148,8 @@ function medila_places_invalidate_coordinates($post_id) {
 // Address parsing
 // ---------------------------------------------------------------------------
 // Addresses are entered free-form, e.g. "Knížete Václava 64, 439 23 Lenešice".
-// The map only uses city/zip for the info window, so a best-effort read of the
-// last comma-separated part is enough — an unparseable address still shows in
-// full via the 'address' key.
+// The map only uses city/zip for the info window, so a best-effort read is
+// enough — an unparseable address still shows in full via the 'address' key.
 
 function medila_places_zip_from_address($address) {
     if (preg_match('/\b(\d{3}\s?\d{2})\b/u', $address, $m)) {
@@ -165,9 +164,17 @@ function medila_places_city_from_address($address) {
         return '';
     }
 
-    $last = end($parts);
-    // Strip a leading postcode: "439 23 Lenešice" -> "Lenešice".
-    $last = preg_replace('/^\s*\d{3}\s?\d{2}\s*/u', '', $last);
+    // The part carrying the postcode is the city: "621 00 Brno" -> "Brno".
+    // Taking the last part instead would yield the district ("Řečkovice") for
+    // "Uprkova 1584/6, 621 00 Brno, Řečkovice".
+    foreach ($parts as $part) {
+        if (preg_match('/\d{3}\s?\d{2}/u', $part)) {
+            $city = trim(preg_replace('/\d{3}\s?\d{2}/u', '', $part));
+            if ($city !== '') {
+                return $city;
+            }
+        }
+    }
 
-    return trim($last);
+    return trim(end($parts));
 }
