@@ -48,6 +48,14 @@ function medila_rd_regions() {
     ];
 }
 
+/**
+ * Czech typography: glue one-letter prepositions/conjunctions (v, s, z, k, o,
+ * u, a, i) to the following word so they never end a line. Takes escaped text.
+ */
+function medila_rd_cz($escaped) {
+    return preg_replace('/(?<![\\w&;])([vszkouaiVSZKOUAI]) (?=\\S)/u', '$1&nbsp;', $escaped);
+}
+
 function medila_rd_svg($name, $size = 16) {
     $paths = [
         'pin'    => '<path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
@@ -427,7 +435,7 @@ function medila_rd_career_title($title) {
 
 add_shortcode('medila_career_cards', 'medila_rd_career_cards_shortcode');
 function medila_rd_career_cards_shortcode($atts) {
-    $atts = shortcode_atts(['count' => 24, 'department' => ''], $atts);
+    $atts = shortcode_atts(['count' => 24, 'department' => '', 'columns' => 3], $atts);
 
     $args = [
         'post_type'      => 'career_position',
@@ -444,7 +452,7 @@ function medila_rd_career_cards_shortcode($atts) {
         return '<p class="mc-empty">Momentálně nemáme žádné otevřené pozice.</p>';
     }
 
-    $out = '<div class="mc-job-grid">';
+    $out = '<div class="mc-job-grid" style="--mc-job-cols:' . max(1, min(4, (int) $atts['columns'])) . '">';
     foreach ($posts as $p) {
         $location = get_post_meta($p->ID, '_career_location', true);
         $type     = medila_rd_employment_label(get_post_meta($p->ID, '_career_employment_type', true));
@@ -453,13 +461,17 @@ function medila_rd_career_cards_shortcode($atts) {
         if ($location) $out .= '<span class="mc-tag">' . medila_rd_svg('pin', 13) . esc_html($location) . '</span>';
         if ($type)     $out .= '<span class="mc-tag mc-tag--soft">' . esc_html($type) . '</span>';
         $out .= '</div>';
-        $out .= '<h3 class="mc-job-card__title"><a href="' . esc_url(get_permalink($p)) . '">' . esc_html(medila_rd_career_title(get_the_title($p))) . '</a></h3>';
-        $out .= '<dl class="mc-job-card__facts">';
+        $out .= '<h3 class="mc-job-card__title"><a href="' . esc_url(get_permalink($p)) . '">' . medila_rd_cz(esc_html(medila_rd_career_title(get_the_title($p)))) . '</a></h3>';
+        // The fixed fields are the doctor-position standard (package 5). Other
+        // roles (nurses, admin) only show the fields that are actually filled.
+        $is_doctor = has_term('lekar', 'department', $p);
+        $facts = '';
         foreach (medila_rd_career_fields() as $key => [$label]) {
             $val = get_post_meta($p->ID, $key, true);
-            $out .= '<div><dt>' . esc_html($label) . '</dt><dd' . ($val === '' ? ' class="is-missing"' : '') . '>' . esc_html($val !== '' ? $val : 'k doplnění') . '</dd></div>';
+            if ($val === '' && !$is_doctor) continue;
+            $facts .= '<div><dt>' . esc_html($label) . '</dt><dd' . ($val === '' ? ' class="is-missing"' : '') . '>' . esc_html($val !== '' ? $val : 'k doplnění') . '</dd></div>';
         }
-        $out .= '</dl>';
+        $out .= $facts ? '<dl class="mc-job-card__facts">' . $facts . '</dl>' : '<div class="mc-job-card__facts"></div>';
         $out .= '<a class="mc-btn mc-btn--primary mc-job-card__cta" href="' . esc_url(get_permalink($p)) . '">Detail pozice</a>';
         $out .= '</article>';
     }

@@ -39,7 +39,7 @@ while (have_posts()) :
                     <a href="<?php echo esc_url(home_url('/pro-lekare/#zamestnani')); ?>">Volné pozice</a>
                     <?php if ($location) : ?><span aria-hidden="true">/</span><span aria-current="page"><?php echo esc_html($location); ?></span><?php endif; ?>
                 </nav>
-                <h1 class="mc-job__title"><?php echo esc_html(medila_rd_career_title(get_the_title())); ?></h1>
+                <h1 class="mc-job__title"><?php echo medila_rd_cz(esc_html(medila_rd_career_title(get_the_title()))); ?></h1>
                 <ul class="mc-job__tags">
                     <?php if ($location) : ?><li class="mc-tag mc-tag--glass"><?php echo esc_html($location); ?></li><?php endif; ?>
                     <?php if ($type) : ?><li class="mc-tag mc-tag--glass"><?php echo esc_html($type); ?></li><?php endif; ?>
@@ -52,7 +52,7 @@ while (have_posts()) :
         <section class="mc-job__intro">
             <div class="mc-wrap">
                 <?php foreach ($parts['intro'] as $p) : ?>
-                    <p><?php echo esc_html($p); ?></p>
+                    <p><?php echo medila_rd_cz(esc_html($p)); ?></p>
                 <?php endforeach; ?>
                 <ul class="mc-strip" aria-label="Co získáte ve skupině Medila Care">
                     <li><span class="mc-strip__ic"><?php echo medila_rd_svg('flask', 16); ?></span>Vlastní laboratorní diagnostika (síť MEDILA)</li>
@@ -73,7 +73,7 @@ while (have_posts()) :
                         <h2 class="mc-numhead"><span class="mc-numhead__num" aria-hidden="true"><?php echo (int) $n; ?></span><?php echo esc_html($s['title'] ?: 'Co nabízíme'); ?></h2>
                         <ul class="mc-checkgrid">
                             <?php foreach ($s['items'] as $item) : ?>
-                                <li><?php echo medila_rd_svg('check', 16); ?><span><?php echo esc_html($item); ?></span></li>
+                                <li><?php echo medila_rd_svg('check', 16); ?><span><?php echo medila_rd_cz(esc_html($item)); ?></span></li>
                             <?php endforeach; ?>
                         </ul>
                     </div>
@@ -119,6 +119,7 @@ while (have_posts()) :
                 </form>
             </div>
         </section>
+        <div class="mc-wave mc-job__wave" aria-hidden="true"></div>
     </main>
     <?php
 endwhile;
