@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Medila Care - Custom Post Types
  * Description: Custom Post Types for medical practices (ambulance) and career positions with custom fields and taxonomies.
- * Version: 1.13.2
+ * Version: 1.14.0-dev
  * Author: Medila Care
  * Text Domain: medila-ambulance
  */
@@ -639,3 +639,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/news-template.php';
 
 // Feed the WP Places Map plugin from the ambulance CPT (no-op if it isn't active)
 require_once plugin_dir_path(__FILE__) . 'includes/places-map-bridge.php';
+
+// Medila Care 2.0: region/new-patient fields, grouped practice list, rich map
+// detail + collection centres, new job cards and job detail layout.
+require_once plugin_dir_path(__FILE__) . 'includes/redesign.php';
