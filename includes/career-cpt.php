@@ -207,7 +207,7 @@ function medila_career_list_shortcode($atts) {
         if ($icon) {
             $output .= '<div class="medila-career-card__icon"><img src="' . esc_url($icon) . '" alt=""></div>';
         } else {
-            $output .= '<div class="medila-career-card__icon medila-career-card__icon--default"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>';
+            $output .= '<div class="medila-career-card__icon medila-career-card__icon--default"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#156D6D" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>';
         }
         $output .= '<div class="medila-career-card__badges">';
         if ($dept_name) {
@@ -225,10 +225,10 @@ function medila_career_list_shortcode($atts) {
         if ($location || $salary) {
             $output .= '<div class="medila-career-card__meta">';
             if ($location) {
-                $output .= '<span class="medila-career-card__location"><svg width="14" height="14" viewBox="0 0 24 24" fill="#009ab2" style="vertical-align:-2px;margin-right:4px;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>' . esc_html($location) . '</span>';
+                $output .= '<span class="medila-career-card__location"><svg width="14" height="14" viewBox="0 0 24 24" fill="#0B4646" style="vertical-align:-2px;margin-right:4px;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>' . esc_html($location) . '</span>';
             }
             if ($salary) {
-                $output .= '<span class="medila-career-card__salary"><svg width="14" height="14" viewBox="0 0 24 24" fill="#00a278" style="vertical-align:-2px;margin-right:4px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93V20h-2v-.07A7.02 7.02 0 0 1 5.7 16l1.44-1.44c.97 1.86 2.93 3.14 5.16 3.38v-5.6l-.6-.22C9.87 11.36 9 10.28 9 9c0-1.63 1.34-2.97 3-3V5h2v1c1.13.12 2.16.57 3 1.27L15.56 8.7A4.99 4.99 0 0 0 13 7.67v5.07l.6.22c1.83.68 2.7 1.76 2.7 3.04 0 1.63-1.34 2.97-3 3v.93z"/></svg>' . esc_html($salary) . '</span>';
+                $output .= '<span class="medila-career-card__salary"><svg width="14" height="14" viewBox="0 0 24 24" fill="#156D6D" style="vertical-align:-2px;margin-right:4px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93V20h-2v-.07A7.02 7.02 0 0 1 5.7 16l1.44-1.44c.97 1.86 2.93 3.14 5.16 3.38v-5.6l-.6-.22C9.87 11.36 9 10.28 9 9c0-1.63 1.34-2.97 3-3V5h2v1c1.13.12 2.16.57 3 1.27L15.56 8.7A4.99 4.99 0 0 0 13 7.67v5.07l.6.22c1.83.68 2.7 1.76 2.7 3.04 0 1.63-1.34 2.97-3 3v.93z"/></svg>' . esc_html($salary) . '</span>';
             }
             $output .= '</div>';
         }
@@ -271,7 +271,7 @@ function medila_career_list_shortcode($atts) {
     }
     .medila-career-card__accent {
         height: 5px;
-        background: #00a278;
+        background: #156D6D;
     }
     .medila-career-card__body {
         padding: 28px 28px 24px;
@@ -322,11 +322,11 @@ function medila_career_list_shortcode($atts) {
     }
     .medila-career-card__badge--dept {
         background: #e8f8f4;
-        color: #00a278;
+        color: #156D6D;
     }
     .medila-career-card__badge--type {
-        background: #e6f4f7;
-        color: #009ab2;
+        background: #DEEDED;
+        color: #0B4646;
     }
     .medila-career-card__title {
         font-family: "Raleway", sans-serif;
@@ -337,7 +337,7 @@ function medila_career_list_shortcode($atts) {
         line-height: 1.35;
     }
     .medila-career-card:hover .medila-career-card__title {
-        color: #00a278;
+        color: #156D6D;
     }
     .medila-career-card__meta {
         display: flex;
@@ -370,11 +370,11 @@ function medila_career_list_shortcode($atts) {
         font-weight: 700;
         letter-spacing: 1px;
         text-transform: uppercase;
-        color: #00a278;
+        color: #156D6D;
         transition: gap 0.3s ease;
     }
     .medila-career-card__cta svg {
-        stroke: #009ab2;
+        stroke: #0B4646;
         transition: transform 0.3s ease;
     }
     .medila-career-card:hover .medila-career-card__cta {

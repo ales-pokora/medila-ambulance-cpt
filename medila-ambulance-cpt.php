@@ -192,7 +192,7 @@ function medila_ambulance_meta_box_callback($post) {
         .medila-meta-field textarea,
         .medila-meta-field select { width: 100%; }
         .medila-meta-section { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e0e0e0; }
-        .medila-meta-section h3 { margin: 0 0 12px; font-size: 14px; text-transform: uppercase; color: #00a278; letter-spacing: 0.5px; }
+        .medila-meta-section h3 { margin: 0 0 12px; font-size: 14px; text-transform: uppercase; color: #156D6D; letter-spacing: 0.5px; }
     </style>
 
     <div class="medila-meta-section">
@@ -434,15 +434,15 @@ function medila_ambulance_list_shortcode($atts) {
         }
 
         if ($address) {
-            $output .= '<p class="medila-ambulance-card__meta-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="#009ab2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>' . esc_html($address) . '</p>';
+            $output .= '<p class="medila-ambulance-card__meta-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="#0B4646"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>' . esc_html($address) . '</p>';
         }
 
         if ($phone) {
-            $output .= '<p class="medila-ambulance-card__meta-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="#009ab2"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2z"/></svg>' . esc_html($phone) . '</p>';
+            $output .= '<p class="medila-ambulance-card__meta-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="#0B4646"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2z"/></svg>' . esc_html($phone) . '</p>';
         }
 
         if ($email) {
-            $output .= '<p class="medila-ambulance-card__meta-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="#009ab2"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>' . esc_html($email) . '</p>';
+            $output .= '<p class="medila-ambulance-card__meta-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="#0B4646"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>' . esc_html($email) . '</p>';
         }
 
         // Insurance — names only, drop any "Name|URL" url portion
@@ -494,7 +494,7 @@ function medila_ambulance_list_shortcode($atts) {
     }
     .medila-ambulance-card__accent {
         height: 5px;
-        background: #009ab2;
+        background: #0B4646;
     }
     .medila-ambulance-card__body {
         padding: 28px 28px 24px;
@@ -505,8 +505,8 @@ function medila_ambulance_list_shortcode($atts) {
     .medila-ambulance-card__badge {
         display: inline-block;
         padding: 4px 10px;
-        background: #e6f4f7;
-        color: #009ab2;
+        background: #DEEDED;
+        color: #0B4646;
         border-radius: 20px;
         font-size: 11px;
         font-weight: 600;
@@ -524,7 +524,7 @@ function medila_ambulance_list_shortcode($atts) {
         line-height: 1.35;
     }
     .medila-ambulance-card:hover .medila-ambulance-card__title {
-        color: #009ab2;
+        color: #0B4646;
     }
     .medila-ambulance-card__doctors {
         display: flex;
@@ -533,7 +533,7 @@ function medila_ambulance_list_shortcode($atts) {
         margin-bottom: 14px;
     }
     .medila-ambulance-card__doctor {
-        color: #00a278;
+        color: #156D6D;
         font-size: 14px;
         font-weight: 600;
     }
@@ -559,8 +559,8 @@ function medila_ambulance_list_shortcode($atts) {
     .medila-ambulance-card__insurance-tag {
         display: inline-block;
         padding: 4px 10px;
-        background: #f2f7f5;
-        color: #00a278;
+        background: #DEEDEA;
+        color: #156D6D;
         border-radius: 16px;
         font-size: 11px;
         font-weight: 600;
@@ -577,11 +577,11 @@ function medila_ambulance_list_shortcode($atts) {
         font-weight: 700;
         letter-spacing: 1px;
         text-transform: uppercase;
-        color: #009ab2;
+        color: #0B4646;
         transition: gap 0.3s ease;
     }
     .medila-ambulance-card__cta svg {
-        stroke: #009ab2;
+        stroke: #0B4646;
         transition: transform 0.3s ease;
     }
     .medila-ambulance-card:hover .medila-ambulance-card__cta {

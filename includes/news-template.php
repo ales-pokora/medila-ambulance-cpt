@@ -124,7 +124,7 @@ function medila_news_single_shortcode() {
                             <div class="madx-newsitem__media" style="background-image:url('<?php echo esc_url($r_thumb); ?>');"></div>
                         <?php else : ?>
                             <div class="madx-newsitem__media madx-newsitem__media--placeholder">
-                                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#156D6D" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                             </div>
                         <?php endif; ?>
                         <div class="madx-newsitem__body">
@@ -241,7 +241,7 @@ function medila_news_archive_shortcode($atts) {
                                 <div class="madx-newsitem__media" style="background-image:url('<?php echo esc_url($r_thumb); ?>');"></div>
                             <?php else : ?>
                                 <div class="madx-newsitem__media madx-newsitem__media--placeholder">
-                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#156D6D" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                                 </div>
                             <?php endif; ?>
                             <div class="madx-newsitem__body">
@@ -335,7 +335,7 @@ function medila_news_template_styles() {
     /* ===== SHARED .madx-* BASE (also defined in single-template.php; duplicated
        here so news pages have all styles without depending on the ambulance
        enqueue function loading) ===== */
-    .madx{--g:#00a278;--b:#009ab2;--ink:#1a1a2e;--mute:#6b7280;--soft:#f2f7f5;font-family:"Poppins","Raleway",-apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink);max-width:1180px;margin:0 auto;padding:0 16px 60px;}
+    .madx{--g:#156D6D;--b:#0B4646;--ink:#1a1a2e;--mute:#6b7280;--soft:#DEEDEA;font-family:"Poppins","Raleway",-apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink);max-width:1180px;margin:0 auto;padding:0 16px 60px;}
     .madx *{box-sizing:border-box;}
 
     /* Buttons (shared) */
@@ -362,7 +362,7 @@ function medila_news_template_styles() {
     .madx-newsitem__media{position:relative;height:200px;background-size:cover;background-position:center;background-color:#e8f8f4;overflow:hidden;}
     .madx-newsitem__media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,0.22) 100%);opacity:0;transition:opacity .35s;}
     .madx-newsitem:hover .madx-newsitem__media::after{opacity:1;}
-    .madx-newsitem__media--placeholder{display:flex;align-items:center;justify-content:center;background:#f2f7f5;}
+    .madx-newsitem__media--placeholder{display:flex;align-items:center;justify-content:center;background:#DEEDEA;}
     .madx-newsitem__media--placeholder::after{display:none;}
     .madx-newsitem__body{padding:24px 26px 26px;flex:1;display:flex;flex-direction:column;}
     .madx-newsitem__date{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--g) !important;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
@@ -399,14 +399,14 @@ function medila_news_template_styles() {
     .madx-ns-content a:hover{text-decoration-color:var(--g);color:var(--ink);}
     .madx-ns-content ul,.madx-ns-content ol{margin:0 0 18px;padding-left:24px;}
     .madx-ns-content li{margin-bottom:8px;}
-    .madx-ns-content blockquote{border-left:4px solid var(--g);background:#f2f7f5;padding:22px 28px;margin:28px 0;border-radius:0 14px 14px 0;font-style:italic;color:#3a3a3a;font-size:16px;}
+    .madx-ns-content blockquote{border-left:4px solid var(--g);background:#DEEDEA;padding:22px 28px;margin:28px 0;border-radius:0 14px 14px 0;font-style:italic;color:#3a3a3a;font-size:16px;}
     .madx-ns-content blockquote p:last-child{margin-bottom:0;}
     .madx-ns-content img{max-width:100%;height:auto;border-radius:14px;margin:24px 0;display:block;}
     .madx-ns-content hr{border:none;border-top:1px solid #e8eded;margin:36px 0;}
-    .madx-ns-content code{background:#f2f7f5;color:var(--g);padding:2px 8px;border-radius:6px;font-size:.92em;}
+    .madx-ns-content code{background:#DEEDEA;color:var(--g);padding:2px 8px;border-radius:6px;font-size:.92em;}
     .madx-ns-content table{width:100%;border-collapse:collapse;margin:24px 0;}
     .madx-ns-content table th,.madx-ns-content table td{padding:12px 16px;border-bottom:1px solid #e8eded;text-align:left;}
-    .madx-ns-content table th{background:#f2f7f5;color:var(--ink);font-weight:700;}
+    .madx-ns-content table th{background:#DEEDEA;color:var(--ink);font-weight:700;}
 
     /* ===== BACK CTA STRIP ===== */
     .madx-ns-back{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;padding:32px 0 50px;border-top:1px solid #e8eded;border-bottom:1px solid #e8eded;margin-bottom:50px;}
@@ -420,14 +420,14 @@ function medila_news_template_styles() {
 
     /* ===== FILTER CHIPS ===== */
     .madx-na-filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:32px;}
-    .madx-chip{display:inline-flex;align-items:center;padding:9px 18px;background:#f2f7f5;color:var(--ink) !important;border-radius:30px;font-size:13px;font-weight:700;text-decoration:none !important;letter-spacing:.3px;border:2px solid transparent;transition:all .25s;}
+    .madx-chip{display:inline-flex;align-items:center;padding:9px 18px;background:#DEEDEA;color:var(--ink) !important;border-radius:30px;font-size:13px;font-weight:700;text-decoration:none !important;letter-spacing:.3px;border:2px solid transparent;transition:all .25s;}
     .madx-chip:hover{background:#e8f8f4;color:var(--g) !important;transform:translateY(-1px);}
     .madx-chip--active,.madx-chip--active:hover{background:var(--g);color:#fff !important;transform:none;box-shadow:0 8px 18px rgba(0,162,120,0.28);}
 
     /* Archive grid sizing — 3 columns desktop */
     .madx-newsgrid--archive{margin-bottom:0;}
     .madx-newsgrid--archive .madx-newsgrid__items{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));}
-    .madx-newsitem__amb{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;color:var(--b);text-transform:uppercase;letter-spacing:.8px;background:#e6f4f7;padding:4px 10px;border-radius:8px;margin-bottom:10px;align-self:flex-start;}
+    .madx-newsitem__amb{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;color:var(--b);text-transform:uppercase;letter-spacing:.8px;background:#DEEDED;padding:4px 10px;border-radius:8px;margin-bottom:10px;align-self:flex-start;}
 
     /* ===== PAGINATION ===== */
     .madx-pagination{display:flex;justify-content:center;gap:8px;margin-top:44px;flex-wrap:wrap;}
@@ -439,7 +439,7 @@ function medila_news_template_styles() {
 
     /* ===== EMPTY STATE ===== */
     .madx-na-empty{text-align:center;padding:70px 30px;background:#fff;border-radius:22px;border:1px solid #e8eded;}
-    .madx-na-empty__icon{width:88px;height:88px;background:#f2f7f5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;}
+    .madx-na-empty__icon{width:88px;height:88px;background:#DEEDEA;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;}
     .madx-na-empty h2{font-family:"Raleway",sans-serif;font-size:26px;font-weight:800;color:var(--ink);margin:0 0 10px;}
     .madx-na-empty p{color:#666;font-size:15px;margin:0 auto 24px;max-width:440px;line-height:1.6;}
 

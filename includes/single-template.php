@@ -77,7 +77,7 @@ function medila_amb_doctors_shortcode() {
     foreach ($doctors as $d) {
         $avatar = $d['photo']
             ? '<img class="mad-doctor-chip__photo" src="' . esc_url($d['photo']) . '" alt="' . esc_attr($d['name']) . '">'
-            : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+            : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#156D6D" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
         $cls = $d['photo'] ? 'mad-doctor-chip mad-doctor-chip--has-photo' : 'mad-doctor-chip';
         $output .= '<div class="' . $cls . '">' . $avatar . '<span>' . esc_html($d['name']) . '</span></div>';
     }
@@ -94,7 +94,7 @@ function medila_amb_nurses_shortcode() {
     foreach ($nurses as $n) {
         $avatar = $n['photo']
             ? '<img class="mad-doctor-chip__photo" src="' . esc_url($n['photo']) . '" alt="' . esc_attr($n['name']) . '">'
-            : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#009ab2" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+            : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B4646" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
         $cls = $n['photo'] ? 'mad-doctor-chip mad-doctor-chip--nurse mad-doctor-chip--has-photo' : 'mad-doctor-chip mad-doctor-chip--nurse';
         $output .= '<div class="' . $cls . '">' . $avatar . '<span>' . esc_html($n['name']) . '</span></div>';
     }
@@ -118,7 +118,7 @@ function medila_amb_phone_hero_shortcode($atts) {
         $output .= '<span class="mad-phone-hero__label">' . esc_html($atts['label']) . '</span>';
     }
     $tel = preg_replace('/\s+/', '', $phone);
-    $output .= '<a href="tel:' . esc_attr($tel) . '" class="mad-phone-hero__number"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2.2" style="vertical-align:-3px;margin-right:8px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>' . esc_html($phone) . '</a>';
+    $output .= '<a href="tel:' . esc_attr($tel) . '" class="mad-phone-hero__number"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#156D6D" stroke-width="2.2" style="vertical-align:-3px;margin-right:8px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>' . esc_html($phone) . '</a>';
     if ($booking_url) {
         $output .= '<a href="' . esc_url($booking_url) . '" target="_blank" rel="noopener" class="mad-btn mad-btn--primary mad-phone-hero__book">' . esc_html($atts['book_text']) . '</a>';
     }
@@ -324,7 +324,7 @@ function medila_amb_news_grid_shortcode($atts) {
         if ($thumb) {
             $out .= '<div class="madx-newsitem__media" style="background-image:url(\'' . esc_url($thumb) . '\');"></div>';
         } else {
-            $out .= '<div class="madx-newsitem__media madx-newsitem__media--placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>';
+            $out .= '<div class="madx-newsitem__media madx-newsitem__media--placeholder"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#156D6D" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>';
         }
         $out .= '<div class="madx-newsitem__body">';
         $out .= '<span class="madx-newsitem__date">' . esc_html($date) . '</span>';
@@ -419,7 +419,7 @@ function medila_amb_full_shortcode() {
                                 <?php if ($p['photo']) : ?>
                                     <img src="<?php echo esc_url($p['photo']); ?>" alt="<?php echo esc_attr($p['name']); ?>">
                                 <?php else : ?>
-                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#156D6D" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                                 <?php endif; ?>
                             </div>
                             <div>
@@ -706,8 +706,8 @@ function medila_ambulance_detail_styles() {
 
     $css = '
     .mad-doctors{display:flex;flex-wrap:wrap;gap:12px;margin:5px 0 0;}
-    .mad-doctor-chip{display:inline-flex;align-items:center;gap:8px;background:#fff;padding:8px 18px;border-radius:30px;font-size:15px;font-weight:600;color:#00a278;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
-    .mad-doctor-chip--nurse{color:#009ab2;}
+    .mad-doctor-chip{display:inline-flex;align-items:center;gap:8px;background:#fff;padding:8px 18px;border-radius:30px;font-size:15px;font-weight:600;color:#156D6D;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+    .mad-doctor-chip--nurse{color:#0B4646;}
     .mad-doctor-chip--has-photo{padding-left:6px;}
     .mad-doctor-chip__photo{width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,162,120,0.18);}
     .mad-doctor-chip--nurse .mad-doctor-chip__photo{box-shadow:0 0 0 1px rgba(0,154,178,0.18);}
@@ -715,7 +715,7 @@ function medila_ambulance_detail_styles() {
     .mad-phone-hero{display:inline-flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:18px;}
     .mad-phone-hero__label{font-size:14px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.5px;}
     .mad-phone-hero__number{font-size:22px;font-weight:800;color:#1a1a2e;text-decoration:none;letter-spacing:.3px;transition:color .2s;}
-    .mad-phone-hero__number:hover{color:#00a278;}
+    .mad-phone-hero__number:hover{color:#156D6D;}
     @media(max-width:600px){
         .mad-phone-hero__number{font-size:18px;}
     }
@@ -725,13 +725,13 @@ function medila_ambulance_detail_styles() {
     .mad-info-row:last-child{border-bottom:none;}
     .mad-info-label{font-size:13px;color:#888;font-weight:500;flex-shrink:0;min-width:80px;}
     .mad-info-value{font-size:15px;color:#333;font-weight:500;text-align:right;}
-    .mad-link{color:#009ab2;text-decoration:none;transition:color .2s;}
-    .mad-link:hover{color:#00a278;}
-    .mad-map-link{display:inline-block;font-size:12px;color:#009ab2;text-decoration:none;margin-left:6px;padding:2px 10px;background:#e6f4f7;border-radius:12px;transition:all .2s;}
-    .mad-map-link:hover{background:#009ab2;color:#fff;}
+    .mad-link{color:#0B4646;text-decoration:none;transition:color .2s;}
+    .mad-link:hover{color:#156D6D;}
+    .mad-map-link{display:inline-block;font-size:12px;color:#0B4646;text-decoration:none;margin-left:6px;padding:2px 10px;background:#DEEDED;border-radius:12px;transition:all .2s;}
+    .mad-map-link:hover{background:#0B4646;color:#fff;}
 
     .mad-hours-table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;}
-    .mad-hours-table th{background:#f8faf9;color:#00a278;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.5px;padding:10px 12px;text-align:center;border-bottom:2px solid #e8f4f0;}
+    .mad-hours-table th{background:#f8faf9;color:#156D6D;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.5px;padding:10px 12px;text-align:center;border-bottom:2px solid #e8f4f0;}
     .mad-hours-table th:first-child{border-radius:8px 0 0 0;text-align:left;}
     .mad-hours-table th:last-child{border-radius:0 8px 0 0;}
     .mad-hours-table td{padding:10px 12px;text-align:center;border-bottom:1px solid #f3f3f3;color:#555;}
@@ -745,21 +745,21 @@ function medila_ambulance_detail_styles() {
     .mad-services li{position:relative;padding:8px 0 8px 24px;font-size:15px;color:#444;border-bottom:1px solid #f5f5f5;background:none !important;}
     .mad-services li::marker{content:"" !important;color:transparent !important;}
     .mad-services li:last-child{border-bottom:none;}
-    .mad-services li::before{content:"";position:absolute;left:0;top:15px;width:8px;height:8px;border-radius:50%;background:#00a278;}
+    .mad-services li::before{content:"";position:absolute;left:0;top:15px;width:8px;height:8px;border-radius:50%;background:#156D6D;}
 
     /* Card accent bars: solid brand colors instead of gradient */
-    .mad-card__accent{background:#009ab2 !important;height:4px;}
-    .mad-card__accent--green{background:#00a278 !important;}
+    .mad-card__accent{background:#0B4646 !important;height:4px;}
+    .mad-card__accent--green{background:#156D6D !important;}
 
     .mad-insurance-tags{display:flex;flex-wrap:wrap;gap:8px;}
-    .mad-insurance-tag{display:inline-block;padding:8px 18px;background:#f2f7f5;color:#00a278;border-radius:30px;font-size:14px;font-weight:600;letter-spacing:.3px;text-decoration:none;transition:background .2s,color .2s,transform .2s;}
-    .mad-insurance-tag--link:hover{background:#00a278;color:#fff;transform:translateY(-1px);}
+    .mad-insurance-tag{display:inline-block;padding:8px 18px;background:#DEEDEA;color:#156D6D;border-radius:30px;font-size:14px;font-weight:600;letter-spacing:.3px;text-decoration:none;transition:background .2s,color .2s,transform .2s;}
+    .mad-insurance-tag--link:hover{background:#156D6D;color:#fff;transform:translateY(-1px);}
 
     .mad-btn{display:inline-block;padding:16px 36px;border-radius:100px;font-size:14px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;transition:all .3s;cursor:pointer;}
-    .mad-btn--primary{background:#00a278;color:#fff;}
+    .mad-btn--primary{background:#156D6D;color:#fff;}
     .mad-btn--primary:hover{background:#1a1a2e;color:#fff;transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,26,46,.3);}
-    .mad-btn--outline{background:transparent;color:#00a278;border:2px solid #00a278;}
-    .mad-btn--outline:hover{background:#00a278;color:#fff;transform:translateY(-2px);}
+    .mad-btn--outline{background:transparent;color:#156D6D;border:2px solid #156D6D;}
+    .mad-btn--outline:hover{background:#156D6D;color:#fff;transform:translateY(-2px);}
 
     .mad-text{font-size:15px;line-height:1.8;color:#555;margin:0;}
 
@@ -805,7 +805,7 @@ function medila_ambulance_detail_styles() {
     /* ============================================================
        PREMIUM FULL LAYOUT (.madx-*) used by [medila_amb_full]
        ============================================================ */
-    .madx{--g:#00a278;--b:#009ab2;--ink:#1a1a2e;--mute:#6b7280;--soft:#f2f7f5;font-family:"Poppins","Raleway",-apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink);max-width:1180px;margin:0 auto;padding:0 16px 60px;}
+    .madx{--g:#156D6D;--b:#0B4646;--ink:#1a1a2e;--mute:#6b7280;--soft:#DEEDEA;font-family:"Poppins","Raleway",-apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink);max-width:1180px;margin:0 auto;padding:0 16px 60px;}
     .madx *{box-sizing:border-box;}
 
     /* HERO */
@@ -852,7 +852,7 @@ function medila_ambulance_detail_styles() {
     .madx-strip__item strong{display:block;font-size:15px;font-weight:700;color:var(--ink) !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
     /* NEWS BANNER */
-    .madx-news{display:flex;gap:22px;align-items:flex-start;padding:28px 32px;background:#f2f7f5;border-left:5px solid var(--g);border-radius:18px;margin-bottom:40px;box-shadow:0 4px 24px rgba(0,162,120,0.08);}
+    .madx-news{display:flex;gap:22px;align-items:flex-start;padding:28px 32px;background:#DEEDEA;border-left:5px solid var(--g);border-radius:18px;margin-bottom:40px;box-shadow:0 4px 24px rgba(0,162,120,0.08);}
     .madx-news__icon{width:52px;height:52px;background:var(--g);color:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 16px rgba(0,162,120,0.30);}
     .madx-news__label{display:block;font-size:11px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px;}
     .madx-news__body p{margin:0;font-size:16px;line-height:1.7;color:var(--ink);font-weight:500;}
@@ -876,7 +876,7 @@ function medila_ambulance_detail_styles() {
     .madx-newsitem__cta{color:var(--g);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:auto;}
 
     /* News single back-link */
-    .madx-news-back{display:inline-flex;align-items:center;gap:6px;color:var(--g) !important;text-decoration:none !important;font-size:14px;font-weight:600;padding:10px 18px;background:#f2f7f5;border-radius:100px;transition:all .25s;}
+    .madx-news-back{display:inline-flex;align-items:center;gap:6px;color:var(--g) !important;text-decoration:none !important;font-size:14px;font-weight:600;padding:10px 18px;background:#DEEDEA;border-radius:100px;transition:all .25s;}
     .madx-news-back:hover{background:var(--g);color:#fff !important;}
     .madx-news-back strong{font-weight:700;}
 
@@ -888,7 +888,7 @@ function medila_ambulance_detail_styles() {
     .madx-card__head{display:flex;align-items:center;gap:14px;padding:28px 30px 0;}
     .madx-card__icon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
     .madx-card__icon--green{background:#e8f8f4;color:var(--g);}
-    .madx-card__icon--blue{background:#e6f4f7;color:var(--b);}
+    .madx-card__icon--blue{background:#DEEDED;color:var(--b);}
     .madx-card__title{font-family:"Raleway",sans-serif;font-size:21px;font-weight:800;color:var(--ink);margin:0;letter-spacing:-.4px;}
     .madx-card__body{padding:22px 30px 30px;}
 
@@ -918,7 +918,7 @@ function medila_ambulance_detail_styles() {
 
     /* INSURANCE */
     .madx-insurance{display:flex;flex-wrap:wrap;gap:10px;}
-    .madx-pill{display:inline-flex;align-items:center;gap:6px;padding:11px 22px;background:#f2f7f5;color:var(--g);border-radius:30px;font-size:14px;font-weight:700;letter-spacing:.3px;text-decoration:none;border:2px solid transparent;transition:all .28s ease;}
+    .madx-pill{display:inline-flex;align-items:center;gap:6px;padding:11px 22px;background:#DEEDEA;color:var(--g);border-radius:30px;font-size:14px;font-weight:700;letter-spacing:.3px;text-decoration:none;border:2px solid transparent;transition:all .28s ease;}
     .madx-pill--link{cursor:pointer;}
     .madx-pill--link:hover{background:var(--g);color:#fff;transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,162,120,0.32);}
     .madx-pill--link svg{opacity:.6;transition:opacity .25s,transform .25s;}
@@ -1011,7 +1011,7 @@ function medila_ambulance_detail_styles() {
     }
 
     /* BOTTOM CTA */
-    .madx-bottom-cta{background:#f2f7f5;border-radius:26px;padding:64px 40px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden;}
+    .madx-bottom-cta{background:#DEEDEA;border-radius:26px;padding:64px 40px;text-align:center;margin-bottom:20px;position:relative;overflow:hidden;}
     .madx-bottom-cta__title{font-family:"Raleway",sans-serif;font-size:34px;font-weight:800;color:var(--ink);margin:0 0 14px;letter-spacing:-.6px;}
     .madx-bottom-cta__text{font-size:16px;color:#555;margin:0 auto 30px;line-height:1.65;max-width:520px;}
     .madx-bottom-cta__buttons{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}

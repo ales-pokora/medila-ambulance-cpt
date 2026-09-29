@@ -29,21 +29,22 @@ define('MEDILA_RD_GLYPH_STETHOSCOPE', 'M11 2v2|M5 2v2|M5 3H4a2 2 0 0 0-2 2v4a6 6
 define('MEDILA_RD_GLYPH_DROP', 'M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z');
 
 function medila_rd_regions() {
+    // Alphabetical — the order visitors scan the list in (and the mockup's).
     return [
         'praha'            => 'Hlavní město Praha',
-        'stredocesky'      => 'Středočeský kraj',
         'jihocesky'        => 'Jihočeský kraj',
-        'plzensky'         => 'Plzeňský kraj',
-        'karlovarsky'      => 'Karlovarský kraj',
-        'ustecky'          => 'Ústecký kraj',
-        'liberecky'        => 'Liberecký kraj',
-        'kralovehradecky'  => 'Královéhradecký kraj',
-        'pardubicky'       => 'Pardubický kraj',
-        'vysocina'         => 'Kraj Vysočina',
         'jihomoravsky'     => 'Jihomoravský kraj',
-        'olomoucky'        => 'Olomoucký kraj',
-        'zlinsky'          => 'Zlínský kraj',
+        'karlovarsky'      => 'Karlovarský kraj',
+        'vysocina'         => 'Kraj Vysočina',
+        'kralovehradecky'  => 'Královéhradecký kraj',
+        'liberecky'        => 'Liberecký kraj',
         'moravskoslezsky'  => 'Moravskoslezský kraj',
+        'olomoucky'        => 'Olomoucký kraj',
+        'pardubicky'       => 'Pardubický kraj',
+        'plzensky'         => 'Plzeňský kraj',
+        'stredocesky'      => 'Středočeský kraj',
+        'ustecky'          => 'Ústecký kraj',
+        'zlinsky'          => 'Zlínský kraj',
     ];
 }
 
@@ -225,7 +226,7 @@ function medila_rd_ambulance_regions_shortcode($atts) {
     $out = '<div class="mc-regions" style="--mc-cols:' . max(1, (int) $atts['columns']) . '">';
     foreach ($ordered as $slug => $items) {
         $name = $regions[$slug] ?? 'Další ordinace';
-        $out .= '<section class="mc-region" aria-labelledby="mc-region-' . esc_attr($slug) . '">';
+        $out .= '<section class="mc-region' . (count($items) > 1 ? ' mc-region--wide' : '') . '" aria-labelledby="mc-region-' . esc_attr($slug) . '">';
         $out .= '<h3 class="mc-region__title" id="mc-region-' . esc_attr($slug) . '">' . esc_html($name) . '</h3>';
         $out .= '<div class="mc-amb-grid">';
         foreach ($items as $p) {

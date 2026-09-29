@@ -36,7 +36,7 @@ while (have_posts()) :
                 <nav class="mc-breadcrumb" aria-label="Drobečková navigace">
                     <a href="<?php echo esc_url(home_url('/pro-lekare/')); ?>">Pro lékaře</a>
                     <span aria-hidden="true">/</span>
-                    <a href="<?php echo esc_url(home_url('/pro-lekare/#volne-pozice')); ?>">Volné pozice</a>
+                    <a href="<?php echo esc_url(home_url('/pro-lekare/#zamestnani')); ?>">Volné pozice</a>
                     <?php if ($location) : ?><span aria-hidden="true">/</span><span aria-current="page"><?php echo esc_html($location); ?></span><?php endif; ?>
                 </nav>
                 <h1 class="mc-job__title"><?php echo esc_html(medila_rd_career_title(get_the_title())); ?></h1>

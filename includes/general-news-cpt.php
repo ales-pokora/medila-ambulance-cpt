@@ -124,7 +124,7 @@ function medila_gn_grid_shortcode($atts) {
                                 <div class="medila-gn-card__icon medila-gn-card__icon--photo"><img src="<?php echo esc_url($thumb); ?>" alt=""></div>
                             <?php else : ?>
                                 <div class="medila-gn-card__icon medila-gn-card__icon--default">
-                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#156D6D" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                                 </div>
                             <?php endif; ?>
                             <span class="medila-gn-card__date"><?php echo esc_html($date); ?></span>
@@ -147,23 +147,23 @@ function medila_gn_grid_shortcode($atts) {
     .medila-gn-section{margin:50px 0;}
     .medila-gn-section__head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:26px;flex-wrap:wrap;gap:12px;}
     .medila-gn-section__title{font-family:"Raleway",sans-serif;font-size:32px;font-weight:800;color:#1a1a2e;margin:0;letter-spacing:-.4px;}
-    .medila-gn-section__link{color:#00a278 !important;text-decoration:none !important;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;transition:color .2s;}
+    .medila-gn-section__link{color:#156D6D !important;text-decoration:none !important;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;transition:color .2s;}
     .medila-gn-section__link:hover{color:#1a1a2e !important;}
     .medila-gn-grid{display:grid;gap:24px;}
     .medila-gn-card{display:flex;flex-direction:column;background:#fff;border-radius:14px;overflow:hidden;text-decoration:none !important;color:inherit !important;box-shadow:0 2px 20px rgba(50,71,71,0.07);transition:transform .3s ease,box-shadow .3s ease;position:relative;}
     .medila-gn-card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(50,71,71,0.14);}
-    .medila-gn-card__accent{height:5px;background:#00a278;}
+    .medila-gn-card__accent{height:5px;background:#156D6D;}
     .medila-gn-card__body{padding:28px 28px 24px;display:flex;flex-direction:column;flex:1;}
     .medila-gn-card__header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;}
     .medila-gn-card__icon{width:52px;height:52px;border-radius:12px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
     .medila-gn-card__icon--photo img{width:100%;height:100%;object-fit:cover;}
     .medila-gn-card__icon--default{background:#e8f8f4;}
-    .medila-gn-card__date{font-size:11px;font-weight:700;color:#00a278 !important;text-transform:uppercase;letter-spacing:1px;}
+    .medila-gn-card__date{font-size:11px;font-weight:700;color:#156D6D !important;text-transform:uppercase;letter-spacing:1px;}
     .medila-gn-card__title{font-family:"Raleway",sans-serif;font-size:20px;font-weight:700;color:#1a1a2e !important;margin:0 0 12px;line-height:1.35;letter-spacing:-.2px;}
-    .medila-gn-card:hover .medila-gn-card__title{color:#00a278 !important;}
+    .medila-gn-card:hover .medila-gn-card__title{color:#156D6D !important;}
     .medila-gn-card__excerpt{font-size:14px;line-height:1.65;color:#666 !important;margin:0 0 16px;flex:1;font-weight:500;}
-    .medila-gn-card__cta{display:flex;align-items:center;gap:6px;margin-top:auto;padding-top:18px;border-top:1px solid #f0f0f0;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#00a278 !important;transition:gap .3s ease;}
-    .medila-gn-card__cta svg{stroke:#00a278;transition:transform .3s ease;}
+    .medila-gn-card__cta{display:flex;align-items:center;gap:6px;margin-top:auto;padding-top:18px;border-top:1px solid #f0f0f0;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#156D6D !important;transition:gap .3s ease;}
+    .medila-gn-card__cta svg{stroke:#156D6D;transition:transform .3s ease;}
     .medila-gn-card:hover .medila-gn-card__cta{gap:10px;}
     .medila-gn-card:hover .medila-gn-card__cta svg{transform:translateX(4px);}
     @media(max-width:980px){
@@ -230,7 +230,7 @@ function medila_gn_archive_shortcode($atts) {
                                 <div class="madx-newsitem__media" style="background-image:url('<?php echo esc_url($thumb); ?>');"></div>
                             <?php else : ?>
                                 <div class="madx-newsitem__media madx-newsitem__media--placeholder">
-                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#156D6D" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                                 </div>
                             <?php endif; ?>
                             <div class="madx-newsitem__body">
@@ -356,7 +356,7 @@ function medila_gn_single_shortcode() {
                                 <div class="madx-newsitem__media" style="background-image:url('<?php echo esc_url($r_thumb); ?>');"></div>
                             <?php else : ?>
                                 <div class="madx-newsitem__media madx-newsitem__media--placeholder">
-                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#00a278" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#156D6D" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                                 </div>
                             <?php endif; ?>
                             <div class="madx-newsitem__body">
