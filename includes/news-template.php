@@ -335,7 +335,7 @@ function medila_news_template_styles() {
     /* ===== SHARED .madx-* BASE (also defined in single-template.php; duplicated
        here so news pages have all styles without depending on the ambulance
        enqueue function loading) ===== */
-    .madx{--g:#156D6D;--b:#0B4646;--ink:#1a1a2e;--mute:#6b7280;--soft:#DEEDEA;font-family:"Poppins","Raleway",-apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink);max-width:1180px;margin:0 auto;padding:0 16px 60px;}
+    .madx{--g:#156D6D;--b:#0B4646;--ink:#1a1a2e;--mute:#6b7280;--soft:#DEEDEA;font-family:"Raleway",-apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink);max-width:1180px;margin:0 auto;padding:0 16px 60px;}
     .madx *{box-sizing:border-box;}
 
     /* Buttons (shared) */

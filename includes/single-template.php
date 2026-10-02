@@ -805,7 +805,7 @@ function medila_ambulance_detail_styles() {
     /* ============================================================
        PREMIUM FULL LAYOUT (.madx-*) used by [medila_amb_full]
        ============================================================ */
-    .madx{--g:#156D6D;--b:#0B4646;--ink:#1a1a2e;--mute:#6b7280;--soft:#DEEDEA;font-family:"Poppins","Raleway",-apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink);max-width:1180px;margin:0 auto;padding:0 16px 60px;}
+    .madx{--g:#156D6D;--b:#0B4646;--ink:#1a1a2e;--mute:#6b7280;--soft:#DEEDEA;font-family:"Raleway",-apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink);max-width:1180px;margin:0 auto;padding:0 16px 60px;}
     .madx *{box-sizing:border-box;}
 
     /* HERO */
@@ -985,7 +985,7 @@ function medila_ambulance_detail_styles() {
     .madx-rform__row textarea{width:100%;padding:13px 16px;border:1px solid #e0e6e3;border-radius:12px;font-family:inherit;font-size:14px;color:var(--ink);background:#fff;transition:border-color .2s,box-shadow .2s;}
     .madx-rform__row input[type="text"]:focus,
     .madx-rform__row textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(21,109,109,0.12);}
-    .madx-rform__row textarea{resize:vertical;min-height:96px;font-family:"Poppins","Raleway",sans-serif;}
+    .madx-rform__row textarea{resize:vertical;min-height:96px;font-family:"Raleway",sans-serif;}
 
     /* Star rating input — flex row-reverse for the classic ~ sibling trick */
     .madx-stars-input{display:inline-flex;flex-direction:row-reverse;justify-content:flex-end;}
