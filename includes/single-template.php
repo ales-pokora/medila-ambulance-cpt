@@ -1041,7 +1041,7 @@ function medila_ambulance_detail_styles() {
         .madx-doctor__icon{width:38px;height:38px;}
         .madx-hero__actions{flex-direction:column;}
         .madx-btn{width:100%;padding:14px 22px;}
-        .madx-strip{margin:-20px 0 36px;grid-template-columns:1fr;gap:10px;}
+        .madx-strip{margin:-20px 0 36px;grid-template-columns:minmax(0,1fr);gap:10px;}
         .madx-strip__item{padding:16px 18px;border-radius:14px;}
         .madx-strip__item strong{font-size:14px;}
         .madx-news{flex-direction:column;gap:14px;padding:18px 16px;border-radius:14px;}

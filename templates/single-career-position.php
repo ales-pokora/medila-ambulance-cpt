@@ -70,7 +70,7 @@ while (have_posts()) :
                     $n++;
                     ?>
                     <div class="mc-job__section">
-                        <h2 class="mc-numhead"><span class="mc-numhead__num" aria-hidden="true"><?php echo (int) $n; ?></span><?php echo esc_html($s['title'] ?: 'Co nabízíme'); ?></h2>
+                        <h2 class="mc-numhead"><span class="mc-numhead__num" aria-hidden="true"><?php echo (int) $n; ?></span><?php echo medila_rd_cz(esc_html($s['title'] ?: 'Co nabízíme')); ?></h2>
                         <ul class="mc-checkgrid">
                             <?php foreach ($s['items'] as $item) : ?>
                                 <li><?php echo medila_rd_svg('check', 16); ?><span><?php echo medila_rd_cz(esc_html($item)); ?></span></li>
@@ -87,8 +87,8 @@ while (have_posts()) :
                 <?php endif; ?>
 
                 <div class="mc-ctaband">
-                    <h2>Máte zájem o spolupráci?</h2>
-                    <p>Rádi se s vámi nezávazně potkáme a vše projdeme osobně — vyplňte dotazník na této stránce, nebo nám napište přímo.</p>
+                    <h2>Máte zájem o&nbsp;spolupráci?</h2>
+                    <p>Rádi se s&nbsp;vámi nezávazně potkáme a&nbsp;vše projdeme osobně&nbsp;– vyplňte dotazník na této stránce, nebo nám napište přímo.</p>
                     <div class="mc-ctaband__row">
                         <a class="mc-btn mc-btn--light" href="#dotaznik">Vyplnit dotazník</a>
                         <a class="mc-btn mc-btn--ghost" href="mailto:kariera@medilacare.cz">kariera@medilacare.cz</a>
@@ -99,7 +99,7 @@ while (have_posts()) :
 
         <section class="mc-job__form" id="dotaznik">
             <div class="mc-wrap">
-                <h2 class="mc-numhead"><span class="mc-numhead__num" aria-hidden="true"><?php echo (int) $n + 1; ?></span>Máte zájem? Napište nám</h2>
+                <h2 class="mc-numhead"><span class="mc-numhead__num" aria-hidden="true"><?php echo (int) $n + 1; ?></span>Máte zájem? Napište&nbsp;nám</h2>
                 <?php if ($sent === '1') : ?>
                     <p class="mc-notice mc-notice--ok" role="status">Děkujeme, zprávu jsme přijali. Ozveme se vám co nejdříve.</p>
                 <?php elseif ($sent === 'chyba') : ?>
@@ -110,7 +110,7 @@ while (have_posts()) :
                     <input type="hidden" name="position" value="<?php echo (int) $id; ?>">
                     <?php wp_nonce_field('medila_rd_job_' . $id, '_mcnonce'); ?>
                     <p class="mc-form__hp" aria-hidden="true"><label>Web <input type="text" name="website" tabindex="-1" autocomplete="off"></label></p>
-                    <p><label for="mc-jmeno">Jméno a příjmení</label><input id="mc-jmeno" name="jmeno" type="text" autocomplete="name" required></p>
+                    <p><label for="mc-jmeno">Jméno a&nbsp;příjmení</label><input id="mc-jmeno" name="jmeno" type="text" autocomplete="name" required></p>
                     <p><label for="mc-email">E-mail</label><input id="mc-email" name="email" type="email" autocomplete="email" required></p>
                     <p><label for="mc-telefon">Telefon</label><input id="mc-telefon" name="telefon" type="tel" autocomplete="tel"></p>
                     <p><label for="mc-zprava">Zpráva</label><textarea id="mc-zprava" name="zprava" rows="4"></textarea></p>
