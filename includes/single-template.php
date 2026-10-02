@@ -962,7 +962,7 @@ function medila_ambulance_detail_styles() {
     .madx-review__stars{font-size:15px;letter-spacing:1px;}
     .madx-review__content{font-size:14px;line-height:1.65;color:#444 !important;margin:0 0 10px;font-weight:500;}
     .madx-review__date{font-size:11px;color:var(--mute) !important;font-weight:600;text-transform:uppercase;letter-spacing:.6px;}
-    .madx-reviews__empty{font-size:15px;color:#666;margin:0 0 28px;text-align:center;padding:32px 24px;background:#f8faf9;border-radius:14px;border:1px dashed #e0e6e3;}
+    .madx-reviews__empty{font-size:15px;color:#666;margin:0 0 28px;text-align:center;padding:32px 24px !important;text-wrap:balance;background:#f8faf9;border-radius:14px;border:1px dashed #e0e6e3;}
 
     /* Compact rating chip (for hero / listing cards) */
     .madx-rating-chip{display:inline-flex;align-items:center;gap:8px;background:#fff;padding:8px 14px;border-radius:30px;box-shadow:0 2px 10px rgba(50,71,71,0.08);font-size:14px;}
