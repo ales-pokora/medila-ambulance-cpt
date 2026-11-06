@@ -528,7 +528,7 @@ function medila_amb_full_shortcode() {
             <article class="madx-card madx-card--services">
                 <header class="madx-card__head">
                     <div class="madx-card__icon madx-card__icon--green">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
                     </div>
                     <h2 class="madx-card__title">Nabídka ordinace</h2>
                 </header>
@@ -578,6 +578,20 @@ function medila_amb_full_shortcode() {
             </article>
             <?php endif; ?>
 
+            <!-- Amenities (pictograms, redesign.php) -->
+            <?php $amenities = function_exists('medila_rd_amenities_html') ? medila_rd_amenities_html($id) : ''; ?>
+            <?php if ($amenities) : ?>
+            <article class="madx-card madx-card--amenities madx-card--full">
+                <header class="madx-card__head">
+                    <div class="madx-card__icon madx-card__icon--green">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+                    </div>
+                    <h2 class="madx-card__title">Vybavení ordinace</h2>
+                </header>
+                <div class="madx-card__body"><?php echo $amenities; // escaped in medila_rd_amenities_html() ?></div>
+            </article>
+            <?php endif; ?>
+
         </section>
 
         <!-- REGISTRATION CALLOUT -->
@@ -597,7 +611,15 @@ function medila_amb_full_shortcode() {
         <?php endif; ?>
 
         <!-- MAP -->
-        <?php if ($address) : ?>
+        <?php
+        // Same map component and logo pin as the rest of the site when the
+        // practice is geocoded; otherwise the plain Google embed.
+        $has_coords = get_post_meta($id, '_ambulance_lat', true) !== '' && shortcode_exists('wp_places_map');
+        if ($address && $has_coords) : ?>
+        <section class="madx-map madx-map--places">
+            <?php echo do_shortcode('[wp_places_map places="' . (int) $id . '" height="400" zoom="15" filters="no" search="no" cluster="no" regions="no"]'); ?>
+        </section>
+        <?php elseif ($address) : ?>
         <section class="madx-map">
             <iframe
                 src="https://www.google.com/maps?q=<?php echo urlencode($address); ?>&output=embed"
@@ -613,7 +635,7 @@ function medila_amb_full_shortcode() {
         <!-- BOTTOM CTA -->
         <?php if ($booking_url || $pricelist) : ?>
         <section class="madx-bottom-cta">
-            <h2 class="madx-bottom-cta__title">Začněte s péčí, která má jméno</h2>
+            <h2 class="madx-bottom-cta__title">Jsme tu pro Vás</h2>
             <p class="madx-bottom-cta__text">Objednejte se online během pár vteřin nebo si prohlédněte ceník našich služeb.</p>
             <div class="madx-bottom-cta__buttons">
                 <?php if ($booking_url) : ?>
@@ -913,7 +935,7 @@ function medila_ambulance_detail_styles() {
     .madx-services li{list-style:none !important;position:relative;padding:14px 18px 14px 56px;font-size:15px;color:#333;font-weight:500;border-radius:12px;transition:all .25s;line-height:1.5;}
     .madx-services li::marker{content:"" !important;}
     .madx-services li::before{content:"";position:absolute;left:16px;top:50%;transform:translateY(-50%);width:28px;height:28px;background:var(--g);border-radius:50%;box-shadow:0 4px 10px rgba(21,109,109,0.28);}
-    .madx-services li::after{content:"";position:absolute;left:24px;top:50%;transform:translateY(-66%) rotate(45deg);width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;}
+    .madx-services li::after{content:"";position:absolute;left:22px;top:50%;transform:translateY(-50%);width:16px;height:16px;background:#fff;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z%27/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z%27/%3E%3C/svg%3E") center/contain no-repeat;}
     .madx-services li:hover{background:#f5fbf9;padding-left:60px;}
 
     /* INSURANCE */
@@ -934,6 +956,13 @@ function medila_ambulance_detail_styles() {
     /* MAP */
     .madx-map{border-radius:22px;overflow:hidden;box-shadow:0 4px 30px rgba(50,71,71,0.08);margin-bottom:40px;height:400px;border:1px solid #f0f4f3;}
     .madx-map iframe{width:100%;height:100%;border:0;display:block;}
+    .madx-map--places{height:auto;}
+    .madx-map--places .wppm-wrap{margin:0;}
+    .madx-map--places .wppm-canvas{border-radius:0;}
+    .madx-amenities{list-style:none !important;margin:0 !important;padding:0 !important;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;}
+    .madx-amenity{list-style:none !important;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:18px 12px !important;border-radius:16px;background:#F6F8F7;font-size:14px;font-weight:600;color:#16261F;line-height:1.35;}
+    .madx-amenity::marker{content:"" !important;}
+    .madx-amenity__ic{width:52px;height:52px;border-radius:14px;background:#DEEDEA;color:#156D6D;display:flex;align-items:center;justify-content:center;}
 
     /* ============================================================
        REVIEWS  (.madx-reviews / .madx-rform / .madx-rating-chip)
@@ -1054,7 +1083,7 @@ function medila_ambulance_detail_styles() {
         .madx-hours__today{display:block;margin:4px 0 0;width:fit-content;}
         .madx-services li{padding:12px 12px 12px 48px;font-size:14px;}
         .madx-services li::before{left:12px;width:24px;height:24px;}
-        .madx-services li::after{left:19px;width:5px;height:9px;}
+        .madx-services li::after{left:17px;width:14px;height:14px;}
         .madx-callout{padding:24px 18px;border-radius:16px;gap:14px;}
         .madx-callout__icon{width:52px;height:52px;}
         .madx-map{height:280px;border-radius:16px;}

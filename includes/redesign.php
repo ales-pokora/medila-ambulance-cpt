@@ -20,8 +20,9 @@ if (!defined('ABSPATH')) exit;
 
 define('MEDILA_RD_TEAL', '#156D6D');
 define('MEDILA_RD_TEAL_DEEP', '#0B4646');
-define('MEDILA_RD_RED', '#C0392B');
-define('MEDILA_RD_RED_DEEP', '#922B21');
+// Collection centres: Care Grey, so they read as secondary to the practices.
+define('MEDILA_RD_GREY', '#73827F');
+define('MEDILA_RD_GREY_DEEP', '#424C4A');
 define('MEDILA_RD_ODBER_TERM', 'odberove-centrum');
 
 // 24×24 stroke icons, "|" separates path strings (WP Places Map glyph format).
@@ -199,6 +200,59 @@ function medila_rd_ambulance_save($post_id) {
 }
 
 // ---------------------------------------------------------------------------
+// Ambulance amenities — pictogram row on the practice detail (as on medila.cz)
+// ---------------------------------------------------------------------------
+
+/** slug => [label, 24×24 stroke icon markup] */
+function medila_rd_amenities() {
+    return [
+        'bezbarierovy'  => ['Bezbariérový přístup', '<circle cx="11" cy="4" r="2"/><path d="M11 7v6h5l3 6"/><path d="M8 10a6 6 0 1 0 7.5 8.5"/>'],
+        'vytah'         => ['Výtah', '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="m9 9 3-3 3 3"/><path d="m9 15 3 3 3-3"/>'],
+        'parkovani'     => ['Parkování u ordinace', '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/>'],
+        'terminal'      => ['Platba kartou', '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/>'],
+        'wifi'          => ['Wi-Fi zdarma', '<path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><path d="M2 9a15 15 0 0 1 20 0"/><circle cx="12" cy="19.5" r="1"/>'],
+        'automat'       => ['Nápojový automat', '<path d="M17 8h1a3 3 0 0 1 0 6h-1"/><path d="M3 8h14v6a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"/><path d="M7 2v3M11 2v3"/>'],
+        'objednani'     => ['Možnost objednání', '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/>'],
+        'odbery'        => ['Odběry krve v ordinaci', '<path d="' . esc_attr(MEDILA_RD_GLYPH_DROP) . '"/>'],
+    ];
+}
+
+add_action('add_meta_boxes', 'medila_rd_amenities_meta_box');
+function medila_rd_amenities_meta_box() {
+    add_meta_box('medila_rd_amenities', 'Vybavení ordinace (piktogramy)', 'medila_rd_amenities_meta_box_render', 'ambulance', 'side', 'default');
+}
+
+function medila_rd_amenities_meta_box_render($post) {
+    wp_nonce_field('medila_rd_amenities', 'medila_rd_amenities_nonce');
+    $on = (array) get_post_meta($post->ID, '_ambulance_amenities', true);
+    foreach (medila_rd_amenities() as $slug => [$label]) {
+        echo '<label style="display:block;margin:0 0 6px"><input type="checkbox" name="ambulance_amenities[]" value="' . esc_attr($slug) . '"' . checked(in_array($slug, $on, true), true, false) . '> ' . esc_html($label) . '</label>';
+    }
+    echo '<p class="description">Zaškrtnuté se zobrazí v detailu ordinace jako piktogramy.</p>';
+}
+
+add_action('save_post_ambulance', 'medila_rd_amenities_save', 10, 1);
+function medila_rd_amenities_save($post_id) {
+    if (!isset($_POST['medila_rd_amenities_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['medila_rd_amenities_nonce'])), 'medila_rd_amenities')) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+    $picked = isset($_POST['ambulance_amenities']) ? array_map('sanitize_key', (array) wp_unslash($_POST['ambulance_amenities'])) : [];
+    $picked = array_values(array_intersect(array_keys(medila_rd_amenities()), $picked));
+    $picked ? update_post_meta($post_id, '_ambulance_amenities', $picked) : delete_post_meta($post_id, '_ambulance_amenities');
+}
+
+/** Pictogram list for one practice, '' when none are ticked. */
+function medila_rd_amenities_html($post_id) {
+    $on = (array) get_post_meta($post_id, '_ambulance_amenities', true);
+    $items = '';
+    foreach (medila_rd_amenities() as $slug => [$label, $icon]) {
+        if (!in_array($slug, $on, true)) continue;
+        $items .= '<li class="madx-amenity"><span class="madx-amenity__ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' . $icon . '</svg></span><span>' . esc_html($label) . '</span></li>';
+    }
+    return $items ? '<ul class="madx-amenities">' . $items . '</ul>' : '';
+}
+
+// ---------------------------------------------------------------------------
 // [medila_ambulance_regions] — practice cards grouped by region
 // ---------------------------------------------------------------------------
 
@@ -231,7 +285,8 @@ function medila_rd_ambulance_regions_shortcode($atts) {
     }
     if (isset($groups['_other'])) $ordered['_other'] = $groups['_other'];
 
-    $out = '<div class="mc-regions" style="--mc-cols:' . max(1, (int) $atts['columns']) . '">';
+    $out = '<p class="mc-empty mc-regions__empty" hidden>Vybranému filtru neodpovídá žádná ordinace. <button type="button" class="mc-link-btn" data-mc-filters-reset>Zrušit filtr</button></p>';
+    $out .= '<div class="mc-regions" id="mc-regions" style="--mc-cols:' . max(1, (int) $atts['columns']) . '">';
     foreach ($ordered as $slug => $items) {
         $name = $regions[$slug] ?? 'Další ordinace';
         $out .= '<section class="mc-region' . (count($items) > 1 ? ' mc-region--wide' : '') . '" aria-labelledby="mc-region-' . esc_attr($slug) . '">';
@@ -254,7 +309,10 @@ function medila_rd_ambulance_card($p) {
     $ins     = (string) get_post_meta($id, '_ambulance_insurance', true);
     $accept  = get_post_meta($id, '_ambulance_accepting', true) === '1';
 
-    $h  = '<article class="mc-amb-card">';
+    $town    = medila_rd_town(function_exists('medila_places_city_from_address') ? medila_places_city_from_address((string) $address) : '');
+    $region  = (string) get_post_meta($id, '_ambulance_region', true);
+
+    $h  = '<article class="mc-amb-card" data-region="' . esc_attr($region) . '" data-town="' . esc_attr($town) . '">';
     $h .= '<div class="mc-amb-card__body">';
     if ($accept) {
         $h .= '<span class="mc-tag mc-tag--accent">Přijímáme nové pacienty</span>';
@@ -305,8 +363,13 @@ function medila_rd_places_facility($row, $post) {
         $hours = medila_rd_parse_hours(get_post_meta($post->ID, '_ambulance_hours', true));
         $row['title']        = medila_rd_display_title($row['title']);
         $row['phone']        = ltrim((string) $row['phone'], "'");
+        $row['type']         = 'ordinace';
+        $row['cluster_group'] = 'ordinace';
+        $row['town']         = medila_rd_town($row['city'] ?? '');
         $row['marker_color'] = MEDILA_RD_TEAL;
-        $row['marker_glyph'] = MEDILA_RD_GLYPH_STETHOSCOPE;
+        // Logo pin in Care Teal, like the collection-point maps on medila.cz.
+        $row['marker_icon']      = plugins_url('assets/img/pin-ordinace.svg', __DIR__);
+        $row['marker_icon_size'] = [40, 52];
         $row['accent']       = MEDILA_RD_TEAL;
         $row['accent_deep']  = MEDILA_RD_TEAL_DEEP;
         $row['cta_label']    = 'Detail ordinace';
@@ -340,6 +403,7 @@ function medila_rd_places_facility($row, $post) {
             'lat'          => $lat,
             'lng'          => $lng,
             'type'         => MEDILA_RD_ODBER_TERM,
+            'cluster_group' => MEDILA_RD_ODBER_TERM,
             'type_label'   => '',
             'address'      => get_post_meta($post->ID, '_wppm_address', true),
             // The stored address already ends with the town.
@@ -351,13 +415,15 @@ function medila_rd_places_facility($row, $post) {
             'hours'        => get_post_meta($post->ID, '_wppm_hours', true),
             'description'  => wp_strip_all_tags($post->post_content),
             'image'        => '',
-            'marker_color' => MEDILA_RD_RED,
+            'marker_color' => MEDILA_RD_GREY,
             'marker_glyph' => MEDILA_RD_GLYPH_DROP,
-            'accent'       => MEDILA_RD_RED,
-            'accent_deep'  => MEDILA_RD_RED_DEEP,
+            'accent'       => MEDILA_RD_GREY,
+            'accent_deep'  => MEDILA_RD_GREY_DEEP,
             'cta_label'    => 'Detail odběrového centra',
             'kind'         => 'odber',
         ];
+        $parts = explode(',', (string) $out['address']);
+        $out['town'] = medila_rd_town(end($parts));
         if ($hours['rows']) {
             $out['hours_table'] = ['columns' => $hours['columns'], 'rows' => $hours['rows']];
             $out['schedule']    = $hours['schedule'];
@@ -376,12 +442,61 @@ function medila_rd_places_only_known($places) {
     }));
 }
 
+/**
+ * Town for the filter bar: "Brno-Řečkovice" / "Brno (střed)" / "Červená Voda 333" → "Brno" / "Brno" / "Červená Voda".
+ */
+function medila_rd_town($text) {
+    $t = trim(preg_replace('/\s*\(.*\)\s*$/u', '', (string) $text));
+    $t = trim(preg_replace('/\s+\d[\d\/]*\s*$/u', '', $t));
+    $t = trim(preg_replace('/^\d{3}\s?\d{2}\s+/u', '', $t)); // leading PSČ
+    $t = trim(preg_replace('/(?:\s+\p{Ll}+)+$/u', '', $t)); // "Trutnov poliklinika" → "Trutnov"
+    return trim(explode('-', $t, 2)[0]);
+}
+
+function medila_rd_places_assets() {
+    $js = plugin_dir_path(__DIR__) . 'assets/js/places.js';
+    wp_enqueue_script('medila-rd-places', plugins_url('assets/js/places.js', __DIR__), [], (string) @filemtime($js), ['in_footer' => true, 'strategy' => 'defer']);
+}
+
+/**
+ * Legend under the map. Each entry is also a toggle: show only that kind of
+ * place, click again for all of them.
+ */
 add_shortcode('medila_map_legend', 'medila_rd_map_legend_shortcode');
 function medila_rd_map_legend_shortcode() {
-    return '<ul class="mc-legend" aria-label="Legenda mapy">'
-        . '<li><span class="mc-legend__dot" style="background:' . MEDILA_RD_TEAL . '">' . medila_rd_glyph_svg(MEDILA_RD_GLYPH_STETHOSCOPE, 13) . '</span>Lékař</li>'
-        . '<li><span class="mc-legend__dot" style="background:' . MEDILA_RD_RED . '">' . medila_rd_glyph_svg(MEDILA_RD_GLYPH_DROP, 13) . '</span>Odběrové centrum</li>'
-        . '</ul>';
+    medila_rd_places_assets();
+    $pin = '<img class="mc-legend__pin" src="' . esc_url(plugins_url('assets/img/pin-ordinace.svg', __DIR__)) . '" alt="" width="20" height="26">';
+    return '<div class="mc-legend" role="group" aria-label="Legenda mapy — kliknutím zobrazíte jen daný typ" data-mc-legend>'
+        . '<button type="button" class="mc-legend__item" data-type="ordinace" aria-pressed="false">' . $pin . 'Lékař</button>'
+        . '<button type="button" class="mc-legend__item" data-type="' . esc_attr(MEDILA_RD_ODBER_TERM) . '" aria-pressed="false"><span class="mc-legend__dot" style="background:' . MEDILA_RD_GREY . '">' . medila_rd_glyph_svg(MEDILA_RD_GLYPH_DROP, 13) . '</span>Odběrové centrum</button>'
+        . '</div>';
+}
+
+/**
+ * [medila_place_filters] — kraj / město (and optionally type) filters for the
+ * map on the same page and for the [medila_ambulance_regions] list. Options are
+ * filled from the map's loaded places, so the bar only offers what exists.
+ */
+add_shortcode('medila_place_filters', 'medila_rd_place_filters_shortcode');
+function medila_rd_place_filters_shortcode($atts) {
+    $atts = shortcode_atts(['types' => 'yes', 'list' => ''], $atts);
+    medila_rd_places_assets();
+    $chev = '<svg class="mc-filters__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+    $h  = '<form class="mc-filters" data-mc-place-filters' . ($atts['list'] ? ' data-list="' . esc_attr($atts['list']) . '"' : '') . ' onsubmit="return false" aria-label="Filtr míst">';
+    $h .= '<div class="mc-filters__field"><label for="mc-f-kraj">Kraj</label><span class="mc-filters__select"><select id="mc-f-kraj" name="kraj"><option value="">Všechny kraje</option>';
+    foreach (medila_rd_regions() as $slug => $name) {
+        $h .= '<option value="' . esc_attr($slug) . '">' . esc_html($name) . '</option>';
+    }
+    $h .= '</select>' . $chev . '</span></div>';
+    $h .= '<div class="mc-filters__field"><label for="mc-f-mesto">Město</label><span class="mc-filters__select"><select id="mc-f-mesto" name="mesto"><option value="">Všechna města</option></select>' . $chev . '</span></div>';
+    if ($atts['types'] === 'yes') {
+        $h .= '<div class="mc-filters__field"><label for="mc-f-typ">Typ</label><span class="mc-filters__select"><select id="mc-f-typ" name="typ">'
+            . '<option value="">Lékaři i odběrová centra</option><option value="ordinace">Jen lékaři</option><option value="' . esc_attr(MEDILA_RD_ODBER_TERM) . '">Jen odběrová centra</option>'
+            . '</select>' . $chev . '</span></div>';
+    }
+    $h .= '<button type="button" class="mc-filters__reset" data-reset hidden>Zrušit filtr</button>';
+    $h .= '<p class="mc-filters__count" aria-live="polite"></p>';
+    return $h . '</form>';
 }
 
 // ---------------------------------------------------------------------------
@@ -433,9 +548,39 @@ function medila_rd_career_title($title) {
     return trim(preg_replace('/\s*\((?:[^()]*kraj[^()]*|Kraj[^()]*)\)\s*$/u', '', html_entity_decode($title, ENT_QUOTES, 'UTF-8')));
 }
 
+/**
+ * Position group for the Kariéra filter: the `department` term when it is one
+ * of the three, otherwise guessed from the title.
+ *
+ * @return array{0:string,1:string} [slug, label]
+ */
+function medila_rd_career_group($post) {
+    $groups = medila_rd_career_groups();
+    $terms  = get_the_terms($post, 'department');
+    if ($terms && !is_wp_error($terms)) {
+        foreach ($terms as $t) {
+            if (isset($groups[$t->slug])) return [$t->slug, $groups[$t->slug]];
+        }
+    }
+    $title = mb_strtolower(get_the_title($post), 'UTF-8');
+    if (preg_match('/lékař|lekar/u', $title)) return ['lekar', $groups['lekar']];
+    if (preg_match('/sestr|zdravotn/u', $title)) return ['sestra', $groups['sestra']];
+    return ['administrativa', $groups['administrativa']];
+}
+
+function medila_rd_career_groups() {
+    return ['administrativa' => 'Administrativa', 'sestra' => 'Zdravotní sestra', 'lekar' => 'Lékař'];
+}
+
+/**
+ * [medila_career_cards count="-1" initial="6" filters="yes" hide="patient_base"]
+ *  - initial  cards shown before "Zobrazit další pozice" (0 = all)
+ *  - filters  position type + location selects above the grid
+ *  - hide     comma list of fixed fields to leave out: patient_base, work_mode, start
+ */
 add_shortcode('medila_career_cards', 'medila_rd_career_cards_shortcode');
 function medila_rd_career_cards_shortcode($atts) {
-    $atts = shortcode_atts(['count' => 24, 'department' => '', 'columns' => 3], $atts);
+    $atts = shortcode_atts(['count' => 24, 'department' => '', 'columns' => 3, 'initial' => 0, 'filters' => 'no', 'hide' => ''], $atts);
 
     $args = [
         'post_type'      => 'career_position',
@@ -452,28 +597,74 @@ function medila_rd_career_cards_shortcode($atts) {
         return '<p class="mc-empty">Momentálně nemáme žádné otevřené pozice.</p>';
     }
 
-    $out = '<div class="mc-job-grid" style="--mc-job-cols:' . max(1, min(4, (int) $atts['columns'])) . '">';
-    foreach ($posts as $p) {
+    $hide   = array_map(static function ($k) { return '_career_' . trim($k); }, array_filter(explode(',', $atts['hide'])));
+    $fields = array_diff_key(medila_rd_career_fields(), array_flip($hide));
+    $initial = max(0, (int) $atts['initial']);
+    $with_filters = $atts['filters'] === 'yes';
+    $interactive  = $with_filters || ($initial && count($posts) > $initial);
+
+    $cards = '';
+    $found_groups = [];
+    $found_towns  = [];
+    foreach ($posts as $i => $p) {
         $location = get_post_meta($p->ID, '_career_location', true);
         $type     = medila_rd_employment_label(get_post_meta($p->ID, '_career_employment_type', true));
-        $out .= '<article class="mc-job-card">';
-        $out .= '<div class="mc-job-card__tags">';
-        if ($location) $out .= '<span class="mc-tag">' . medila_rd_svg('pin', 13) . esc_html($location) . '</span>';
-        if ($type)     $out .= '<span class="mc-tag mc-tag--soft">' . esc_html($type) . '</span>';
-        $out .= '</div>';
-        $out .= '<h3 class="mc-job-card__title"><a href="' . esc_url(get_permalink($p)) . '">' . medila_rd_cz(esc_html(medila_rd_career_title(get_the_title($p)))) . '</a></h3>';
+        [$group, $group_label] = medila_rd_career_group($p);
+        $town = medila_rd_town($location);
+        $found_groups[$group] = $group_label;
+        if ($town !== '') $found_towns[$town] = true;
+
+        $cards .= '<article class="mc-job-card" data-group="' . esc_attr($group) . '" data-town="' . esc_attr($town) . '"' . ($initial && $i >= $initial ? ' hidden' : '') . '>';
+        $cards .= '<div class="mc-job-card__tags">';
+        if ($location) $cards .= '<span class="mc-tag">' . medila_rd_svg('pin', 13) . esc_html($location) . '</span>';
+        if ($type)     $cards .= '<span class="mc-tag mc-tag--soft">' . esc_html($type) . '</span>';
+        $cards .= '</div>';
+        $cards .= '<h3 class="mc-job-card__title"><a href="' . esc_url(get_permalink($p)) . '">' . medila_rd_cz(esc_html(medila_rd_career_title(get_the_title($p)))) . '</a></h3>';
         // The fixed fields are the doctor-position standard (package 5). Other
         // roles (nurses, admin) only show the fields that are actually filled.
-        $is_doctor = has_term('lekar', 'department', $p);
+        $is_doctor = $group === 'lekar';
         $facts = '';
-        foreach (medila_rd_career_fields() as $key => [$label]) {
+        foreach ($fields as $key => [$label]) {
             $val = get_post_meta($p->ID, $key, true);
             if ($val === '' && !$is_doctor) continue;
             $facts .= '<div><dt>' . esc_html($label) . '</dt><dd' . ($val === '' ? ' class="is-missing"' : '') . '>' . esc_html($val !== '' ? $val : 'k doplnění') . '</dd></div>';
         }
-        $out .= $facts ? '<dl class="mc-job-card__facts">' . $facts . '</dl>' : '<div class="mc-job-card__facts"></div>';
-        $out .= '<a class="mc-btn mc-btn--primary mc-job-card__cta" href="' . esc_url(get_permalink($p)) . '">Detail pozice</a>';
-        $out .= '</article>';
+        $cards .= $facts ? '<dl class="mc-job-card__facts">' . $facts . '</dl>' : '<div class="mc-job-card__facts"></div>';
+        $cards .= '<a class="mc-btn mc-btn--primary mc-job-card__cta" href="' . esc_url(get_permalink($p)) . '">Detail pozice</a>';
+        $cards .= '</article>';
+    }
+
+    $grid = '<div class="mc-job-grid" style="--mc-job-cols:' . max(1, min(4, (int) $atts['columns'])) . '">' . $cards . '</div>';
+    if (!$interactive) {
+        return $grid;
+    }
+
+    wp_enqueue_script('medila-rd-careers', plugins_url('assets/js/careers.js', __DIR__), [], (string) @filemtime(plugin_dir_path(__DIR__) . 'assets/js/careers.js'), ['in_footer' => true, 'strategy' => 'defer']);
+
+    $out = '<div class="mc-jobs" data-mc-jobs data-initial="' . $initial . '">';
+    if ($with_filters) {
+        $chev = '<svg class="mc-filters__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+        $out .= '<form class="mc-filters mc-filters--jobs" onsubmit="return false" aria-label="Filtr pozic">';
+        $out .= '<div class="mc-filters__field"><label for="mc-j-typ">Typ pozice</label><span class="mc-filters__select"><select id="mc-j-typ" name="typ"><option value="">Všechny pozice</option>';
+        foreach (medila_rd_career_groups() as $slug => $label) {
+            if (isset($found_groups[$slug])) $out .= '<option value="' . esc_attr($slug) . '">' . esc_html($label) . '</option>';
+        }
+        $out .= '</select>' . $chev . '</span></div>';
+        $towns = array_keys($found_towns);
+        usort($towns, static function ($a, $b) { return class_exists('Collator') ? (new Collator('cs_CZ'))->compare($a, $b) : strcmp($a, $b); });
+        $out .= '<div class="mc-filters__field"><label for="mc-j-misto">Lokalita</label><span class="mc-filters__select"><select id="mc-j-misto" name="misto"><option value="">Všechny lokality</option>';
+        foreach ($towns as $t) {
+            $out .= '<option>' . esc_html($t) . '</option>';
+        }
+        $out .= '</select>' . $chev . '</span></div>';
+        $out .= '<button type="button" class="mc-filters__reset" data-reset hidden>Zrušit filtr</button>';
+        $out .= '<p class="mc-filters__count" aria-live="polite"></p>';
+        $out .= '</form>';
+    }
+    $out .= $grid;
+    $out .= '<p class="mc-empty mc-jobs__empty" hidden>Vybranému filtru teď neodpovídá žádná pozice. Napište nám i tak na <a href="mailto:kariera@medilacare.cz">kariera@medilacare.cz</a>.</p>';
+    if ($initial && count($posts) > $initial) {
+        $out .= '<div class="mc-center mc-jobs__more"><button type="button" class="mc-btn mc-btn--outline" data-more>Zobrazit další pozice <span data-more-count>(' . (count($posts) - $initial) . ')</span></button></div>';
     }
     return $out . '</div>';
 }
