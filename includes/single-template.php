@@ -340,10 +340,10 @@ function medila_amb_news_grid_shortcode($atts) {
 }
 
 // Back link on single news pages: [medila_news_back]
-// Renders "← Zpět na ambulance {Name}" — only outputs if a parent ambulance is set.
+// Renders "← Zpět na ordinaci {Name}" — only outputs if a parent ambulance is set.
 add_shortcode('medila_news_back', 'medila_news_back_shortcode');
 function medila_news_back_shortcode($atts) {
-    $atts = shortcode_atts(['text' => 'Zpět na ambulanci'], $atts);
+    $atts = shortcode_atts(['text' => 'Zpět na ordinaci'], $atts);
 
     $id = get_the_ID();
     if (!$id || get_post_type($id) !== 'ambulance_news') return '';
@@ -382,6 +382,7 @@ function medila_amb_full_shortcode() {
     $booking_url  = get_post_meta($id, '_ambulance_booking_url', true);
     $pricelist    = get_post_meta($id, '_ambulance_pricelist_url', true);
     $registration = get_post_meta($id, '_ambulance_registration', true);
+    $accepting    = get_post_meta($id, '_ambulance_accepting', true) === '1';
 
     $specs        = get_the_terms($id, 'specialization');
     $spec_name    = ($specs && !is_wp_error($specs)) ? $specs[0]->name : '';
@@ -429,6 +430,13 @@ function medila_amb_full_shortcode() {
                         </div>
                     <?php endforeach; ?>
                 </div>
+                <?php endif; ?>
+
+                <?php if ($accepting) : ?>
+                <a href="<?php echo esc_url(home_url('/pro-pacienty/#registrace')); ?>" class="madx-accepting">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+                    Přijímáme nové pacienty
+                </a>
                 <?php endif; ?>
 
                 <?php if ($booking_url || $phone) : ?>
@@ -653,6 +661,29 @@ function medila_amb_full_shortcode() {
     return ob_get_clean();
 }
 
+/**
+ * Opening hours are shown with acute and booked patients in separate columns
+ * (client review 11/2026). The free-form labels in the hours field vary
+ * ("Akutní případy", "Objednaní", "Objednaní pacienti, akutní případy"), so
+ * they are mapped onto the two standard columns; a combined label fills both.
+ * Any other label (e.g. "Ordinační doba", "Poradna …") keeps its own column.
+ */
+function medila_amb_hours_columns($label) {
+    $l = mb_strtolower($label, 'UTF-8');
+    $cols = [];
+    if (mb_strpos($l, 'akutn') !== false)  $cols[] = 'Akutní pacienti';
+    if (mb_strpos($l, 'objedn') !== false) $cols[] = 'Objednaní pacienti';
+    return $cols ?: [$label];
+}
+
+/** "Ordinační doba" first, then both patient columns (always), then the rest. */
+function medila_amb_hours_order(array $columns) {
+    $std   = ['Akutní pacienti', 'Objednaní pacienti'];
+    $lead  = array_values(array_filter($columns, function ($c) { return mb_stripos($c, 'ordinační doba') !== false; }));
+    $other = array_values(array_filter($columns, function ($c) use ($std, $lead) { return !in_array($c, $std, true) && !in_array($c, $lead, true); }));
+    return array_merge($lead, $std, $other);
+}
+
 // Premium hours table with today-highlighting
 function medila_amb_render_hours_premium($hours_raw) {
     $lines = array_filter(array_map('trim', explode("\n", $hours_raw)));
@@ -692,11 +723,12 @@ function medila_amb_render_hours_premium($hours_raw) {
         $slots = array_filter(array_map('trim', explode('|', trim($parts[1]))));
         $row = ['day' => $day_label, 'slots' => []];
         foreach ($slots as $slot) {
-            if (preg_match('/^(.+?)\s+([\d:.\s\-–]+)$/', $slot, $m)) {
-                $type = trim($m[1]);
+            if (preg_match('/^(.+?)\s+([\d:.\s\-–]+)$/u', $slot, $m)) {
                 $time = trim($m[2]);
-                if (!in_array($type, $all_columns, true)) $all_columns[] = $type;
-                $row['slots'][$type] = $time;
+                foreach (medila_amb_hours_columns(trim($m[1])) as $type) {
+                    if (!in_array($type, $all_columns, true)) $all_columns[] = $type;
+                    $row['slots'][$type] = isset($row['slots'][$type]) ? $row['slots'][$type] . ', ' . $time : $time;
+                }
             }
         }
         $key = mb_strtolower($day_label);
@@ -705,6 +737,7 @@ function medila_amb_render_hours_premium($hours_raw) {
     }
 
     if (empty($parsed_rows)) return '';
+    $all_columns = medila_amb_hours_order($all_columns);
 
     $out  = '<div class="madx-hours-wrap"><table class="madx-hours"><thead><tr><th>Den</th>';
     foreach ($all_columns as $col) $out .= '<th>' . esc_html($col) . '</th>';
@@ -851,6 +884,11 @@ function medila_ambulance_detail_styles() {
     .madx-doctor__name{display:block;font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.1px;}
 
     .madx-hero__actions{display:flex;flex-wrap:wrap;gap:12px;}
+    /* "Přijímáme nové pacienty" — the most visible call on the practice detail (client review 11/2026) */
+    .madx-accepting{display:inline-flex;align-items:center;gap:10px;margin:0 0 22px;padding:14px 26px;border-radius:100px;background:#8BC4BA;color:#0B4646 !important;font-size:15px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;text-decoration:none !important;box-shadow:0 0 0 6px rgba(139,196,186,0.28),0 14px 30px -12px rgba(0,0,0,0.35);transition:transform .25s,box-shadow .25s,background .25s;}
+    .madx-accepting:hover{background:#fff;transform:translateY(-2px);box-shadow:0 0 0 8px rgba(255,255,255,0.22),0 18px 34px -12px rgba(0,0,0,0.4);}
+    .madx-accepting:focus-visible{outline:3px solid #fff;outline-offset:3px;}
+    @media(max-width:600px){.madx-accepting{width:100%;justify-content:center;font-size:14px;padding:13px 18px;}}
 
     /* BUTTONS - !important on color rules so theme link colors do not bleed through */
     .madx-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 30px;border-radius:100px;font-size:14px;font-weight:700;letter-spacing:.5px;text-decoration:none !important;transition:all .3s cubic-bezier(.4,0,.2,1);cursor:pointer;border:2px solid transparent;line-height:1;}

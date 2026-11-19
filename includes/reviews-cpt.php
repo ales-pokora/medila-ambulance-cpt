@@ -70,9 +70,9 @@ function medila_review_meta_box_callback($post) {
         .medila-rfield select, .medila-rfield input[type="text"]{width:100%;max-width:420px;padding:6px 10px;}
     </style>
     <div class="medila-rfield">
-        <label for="review_ambulance">Ambulance *</label>
+        <label for="review_ambulance">Ordinace *</label>
         <select name="review_ambulance" id="review_ambulance">
-            <option value="">— vyberte ambulanci —</option>
+            <option value="">— vyberte ordinaci —</option>
             <?php foreach ($ambulances as $a) : ?>
                 <option value="<?php echo esc_attr($a->ID); ?>" <?php selected($amb_id, $a->ID); ?>><?php echo esc_html($a->post_title); ?></option>
             <?php endforeach; ?>
@@ -120,7 +120,7 @@ function medila_review_admin_columns($cols) {
         'title'       => 'Titulek',
         'rating'      => '★',
         'author_name' => 'Autor',
-        'ambulance'   => 'Ambulance',
+        'ambulance'   => 'Ordinace',
         'date'        => 'Datum',
     ];
 }
@@ -154,7 +154,7 @@ function medila_review_sortable_columns($cols) {
 // =============================================================================
 add_action('add_meta_boxes', 'medila_add_reviews_metabox_to_ambulance');
 function medila_add_reviews_metabox_to_ambulance() {
-    add_meta_box('ambulance_reviews_panel', 'Hodnocení této ambulance', 'medila_ambulance_reviews_panel_callback', 'ambulance', 'normal', 'default');
+    add_meta_box('ambulance_reviews_panel', 'Hodnocení této ordinace', 'medila_ambulance_reviews_panel_callback', 'ambulance', 'normal', 'default');
 }
 
 function medila_ambulance_reviews_panel_callback($post) {
@@ -195,7 +195,7 @@ function medila_ambulance_reviews_panel_callback($post) {
 
     <?php if (!$reviews) : ?>
         <div class="mr-empty">
-            <p style="margin:0 0 12px;">Tato ambulance zatím nemá žádná hodnocení.</p>
+            <p style="margin:0 0 12px;">Tato ordinace zatím nemá žádná hodnocení.</p>
             <a href="<?php echo esc_url($add_url); ?>" class="button">+ Přidat hodnocení</a>
         </div>
     <?php else :

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Medila Care - Custom Post Types
  * Description: Custom Post Types for medical practices (ambulance) and career positions with custom fields and taxonomies.
- * Version: 1.14.0-dev
+ * Version: 1.14.0
  * Author: Medila Care
  * Text Domain: medila-ambulance
  */
@@ -75,18 +75,18 @@ if (!defined('MEDILA_DISABLE_AUTO_UPDATE') && file_exists(__DIR__ . '/lib/plugin
 add_action('init', 'medila_register_ambulance_cpt');
 function medila_register_ambulance_cpt() {
     $labels = [
-        'name'               => 'Ambulance',
-        'singular_name'      => 'Ambulance',
-        'menu_name'          => 'Ambulance',
-        'add_new'            => 'Přidat ambulanci',
-        'add_new_item'       => 'Přidat novou ambulanci',
-        'edit_item'          => 'Upravit ambulanci',
-        'new_item'           => 'Nová ambulance',
-        'view_item'          => 'Zobrazit ambulanci',
-        'search_items'       => 'Hledat ambulance',
-        'not_found'          => 'Žádné ambulance nenalezeny',
-        'not_found_in_trash' => 'Žádné ambulance v koši',
-        'all_items'          => 'Všechny ambulance',
+        'name'               => 'Ordinace',
+        'singular_name'      => 'Ordinace',
+        'menu_name'          => 'Ordinace',
+        'add_new'            => 'Přidat ordinaci',
+        'add_new_item'       => 'Přidat novou ordinaci',
+        'edit_item'          => 'Upravit ordinaci',
+        'new_item'           => 'Nová ordinace',
+        'view_item'          => 'Zobrazit ordinaci',
+        'search_items'       => 'Hledat ordinace',
+        'not_found'          => 'Žádné ordinace nenalezeny',
+        'not_found_in_trash' => 'Žádné ordinace v koši',
+        'all_items'          => 'Všechny ordinace',
     ];
 
     register_post_type('ambulance', [
@@ -146,7 +146,7 @@ add_action('add_meta_boxes', 'medila_add_ambulance_meta_boxes');
 function medila_add_ambulance_meta_boxes() {
     add_meta_box(
         'ambulance_details',
-        'Detaily ambulance',
+        'Detaily ordinace',
         'medila_ambulance_meta_box_callback',
         'ambulance',
         'normal',
@@ -390,7 +390,7 @@ function medila_ambulance_list_shortcode($atts) {
     $query = new WP_Query($args);
 
     if (!$query->have_posts()) {
-        return '<p style="text-align:center;color:#666;">Žádné ambulance k zobrazení.</p>';
+        return '<p style="text-align:center;color:#666;">Žádné ordinace k zobrazení.</p>';
     }
 
     $cols = intval($atts['columns']);

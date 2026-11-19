@@ -108,7 +108,7 @@ function medila_rd_display_title($title) {
  *   "ST: Objednaní 12:00-17:00 | Poradna 10:00-12:00  17:00-18:00"
  * into a day × column table plus a machine schedule for the open/closed badge.
  */
-function medila_rd_parse_hours($text) {
+function medila_rd_parse_hours($text, $patient_columns = false) {
     $day_map = ['PO' => 1, 'ÚT' => 2, 'UT' => 2, 'ST' => 3, 'ČT' => 4, 'CT' => 4, 'PÁ' => 5, 'PA' => 5, 'SO' => 6, 'NE' => 7];
     $columns  = [];
     $by_day   = [];
@@ -133,8 +133,12 @@ function medila_rd_parse_hours($text) {
             if (!$rm) continue;
             $label = trim(preg_replace('/\d.*$/su', '', $segment), " \t:–-");
             $label = $label !== '' ? $label : 'Otevřeno';
-            if (!in_array($label, $columns, true)) {
-                $columns[] = $label;
+            // Same acute / booked columns as the practice detail table.
+            $labels = function_exists('medila_amb_hours_columns') ? medila_amb_hours_columns($label) : [$label];
+            foreach ($labels as $l) {
+                if (!in_array($l, $columns, true)) {
+                    $columns[] = $l;
+                }
             }
             $ranges = [];
             foreach ($rm as $r) {
@@ -143,10 +147,15 @@ function medila_rd_parse_hours($text) {
                 $ranges[] = $from . '–' . $to;
                 $schedule[$iso][] = [sprintf('%02d:%02d', $r[1], $r[2]), sprintf('%02d:%02d', $r[3], $r[4])];
             }
-            $by_day[$day_label][$label] = implode(', ', $ranges);
+            foreach ($labels as $l) {
+                $by_day[$day_label][$l] = implode(', ', $ranges);
+            }
         }
     }
 
+    if ($patient_columns && $columns && function_exists('medila_amb_hours_order')) {
+        $columns = medila_amb_hours_order($columns);
+    }
     $rows = [];
     foreach ($by_day as $day => $cells) {
         $row = ['day' => $day, 'cells' => []];
@@ -181,7 +190,7 @@ function medila_rd_ambulance_meta_box_render($post) {
         echo '<option value="' . esc_attr($slug) . '"' . selected($region, $slug, false) . '>' . esc_html($name) . '</option>';
     }
     echo '</select><span class="description">Podle kraje se ordinace řadí na stránce Pro pacienty.</span></p>';
-    echo '<p><label><input type="checkbox" name="ambulance_accepting" value="1"' . checked($accepting, '1', false) . '> Přijímáme nové pacienty</label><br><span class="description">Zobrazí v detailu na mapě výzvu k registraci.</span></p>';
+    echo '<p><label><input type="checkbox" name="ambulance_accepting" value="1"' . checked($accepting, '1', false) . '> Přijímáme nové pacienty</label><br><span class="description">Zobrazí v detailu ordinace (i na mapě) výrazné tlačítko „Přijímáme nové pacienty“.</span></p>';
 }
 
 add_action('save_post_ambulance', 'medila_rd_ambulance_save', 10, 1);
@@ -360,7 +369,7 @@ function medila_rd_places_query_args($args) {
 add_filter('wppm_facility', 'medila_rd_places_facility', 20, 2);
 function medila_rd_places_facility($row, $post) {
     if ($post->post_type === 'ambulance' && is_array($row)) {
-        $hours = medila_rd_parse_hours(get_post_meta($post->ID, '_ambulance_hours', true));
+        $hours = medila_rd_parse_hours(get_post_meta($post->ID, '_ambulance_hours', true), true);
         $row['title']        = medila_rd_display_title($row['title']);
         $row['phone']        = ltrim((string) $row['phone'], "'");
         $row['type']         = 'ordinace';
@@ -598,6 +607,8 @@ function medila_rd_career_cards_shortcode($atts) {
     }
 
     $hide   = array_map(static function ($k) { return '_career_' . trim($k); }, array_filter(explode(',', $atts['hide'])));
+    // The patient base size is never shown publicly (client review 11/2026).
+    $hide[] = '_career_patient_base';
     $fields = array_diff_key(medila_rd_career_fields(), array_flip($hide));
     $initial = max(0, (int) $atts['initial']);
     $with_filters = $atts['filters'] === 'yes';

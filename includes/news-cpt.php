@@ -15,7 +15,7 @@ function medila_register_ambulance_news_cpt() {
     $labels = [
         'name'               => 'Aktuality',
         'singular_name'      => 'Aktualita',
-        'menu_name'          => 'Aktuality (ambulance)',
+        'menu_name'          => 'Aktuality (ordinace)',
         'add_new'            => 'Přidat aktualitu',
         'add_new_item'       => 'Přidat novou aktualitu',
         'edit_item'          => 'Upravit aktualitu',
@@ -44,7 +44,7 @@ add_action('add_meta_boxes', 'medila_add_news_meta_box');
 function medila_add_news_meta_box() {
     add_meta_box(
         'ambulance_news_details',
-        'Souvislost s ambulancí',
+        'Souvislost s ordinací',
         'medila_news_meta_box_callback',
         'ambulance_news',
         'side',
@@ -66,14 +66,14 @@ function medila_news_meta_box_callback($post) {
     ?>
     <p style="margin-top:0;">Vyberte ordinaci, ke které tato aktualita patří:</p>
     <select name="news_ambulance" style="width:100%;">
-        <option value="">— vyberte ambulanci —</option>
+        <option value="">— vyberte ordinaci —</option>
         <?php foreach ($ambulances as $amb) : ?>
             <option value="<?php echo esc_attr($amb->ID); ?>" <?php selected($amb_id, $amb->ID); ?>>
                 <?php echo esc_html($amb->post_title); ?>
             </option>
         <?php endforeach; ?>
     </select>
-    <p class="description" style="margin-top:10px;">Aktualita se zobrazí v gridu na stránce vybrané ambulance.</p>
+    <p class="description" style="margin-top:10px;">Aktualita se zobrazí v gridu na stránce vybrané ordinace.</p>
     <?php
 }
 

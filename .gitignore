@@ -5,3 +5,4 @@ node_modules/
 vendor/
 .idea/
 .vscode/
+!lib/plugin-update-checker/vendor/
